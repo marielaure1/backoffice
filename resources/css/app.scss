@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+$cl-white: white;
+
+.two-column{
+
+    #side-bar{
+        & > div{
+            
+            .widget{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                background-color: $cl-white;
+                padding: 10px;
+                border-radius: 10px;
+                box-sizing: content-box;
+
+                svg{
+                    font-size: 30px;
+                }
+
+                p{
+                    font-size: 12px;
+                    text-align: center;
+                }
+            }
+        }
+    }
+    & > div:last-child{
+        width: calc(100% - 250px);
+
+        // #top-bar{
+        //     height: ;
+        // }
+    }
+}

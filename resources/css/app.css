@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.two-column #side-bar > div .widget {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-sizing: content-box;
+}
+.two-column #side-bar > div .widget svg {
+  font-size: 30px;
+}
+.two-column #side-bar > div .widget p {
+  font-size: 12px;
+  text-align: center;
+}
+.two-column > div:last-child {
+  width: calc(100% - 250px);
+}/*# sourceMappingURL=app.css.map */
