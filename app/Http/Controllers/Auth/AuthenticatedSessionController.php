@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,11 +32,35 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $response = Http::withHeaders(['Content-Type' => 'application/json'])
+                ->post('http://localhost:3001/api/auth/loginAdmin', $request->all());
+    
+            $users = $response->json();
 
-        $request->session()->regenerate();
+            var_dump($user);
+                die();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+            if ($users["token"]) {
+                $token = $users["token"];
+                $user = $users["user"];
+    
+                session(['jwt_token' => $token]);
+                session(['auth_first_name' => $user["first_name"]]);
+                session(['auth_last_name' => $user["last_name"]]);
+                session(['auth_role' => $user["role"]]);
+
+                // var_dump($user);
+                // die();
+                
+                return redirect()->intended('/');
+                // return redirect()->intended(RouteServiceProvider::HOME);
+            }
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+        }
+
+        return redirect()->intended('/login');
     }
 
     /**
@@ -48,6 +74,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

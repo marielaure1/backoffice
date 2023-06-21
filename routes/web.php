@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\PlansController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,10 +32,33 @@ Route::get('/', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', function () {
+Route::get('/', function () {
     return Inertia::render('Dashboard');
-})->name('dashboard');
+})->middleware(['jwt'])->name('dashboard');
 
+Route::prefix('users')->middleware(['jwt'])->group(function () {
+    Route::get('/', [UsersController::class, 'index'])->name('users');
+    Route::post('/', [UsersController::class, 'create'])->name('users.create');
+    Route::get('/{id}', [UsersController::class, 'show'])->name('users.show');
+    Route::put('/{id}', [UsersController::class, 'update'])->name('users.update');
+    Route::delete('/{id}', [UsersController::class, 'delete'])->name('users.delete');
+});
+
+Route::prefix('plans')->middleware(['jwt'])->group(function () {
+    Route::get('/', [PlansController::class, 'index'])->name('plans');
+    Route::post('/', [PlansController::class, 'create'])->name('plans.create');
+    Route::get('/{id}', [PlansController::class, 'show'])->name('plans.show');
+    Route::put('/{id}', [PlansController::class, 'update'])->name('plans.update');
+    Route::delete('/{id}', [PlansController::class, 'delete'])->name('plans.delete');
+});
+
+Route::prefix('products')->middleware(['jwt'])->group(function () {
+    Route::get('/', [ProductsController::class, 'index'])->name('products');
+    Route::post('/', [ProductsController::class, 'create'])->name('products.create');
+    Route::get('/{id}', [ProductsController::class, 'show'])->name('products.show');
+    Route::put('/{id}', [ProductsController::class, 'update'])->name('products.update');
+    Route::delete('/{id}', [ProductsController::class, 'delete'])->name('products.delete');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

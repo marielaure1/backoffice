@@ -5,6 +5,7 @@
         "dev": "vite",
         "build": "vite build"
     },
+    "dev": "vite --optimizeDeps=false",
     "devDependencies": {
         "@headlessui/react": "^1.4.2",
         "@iconify/react": "^4.1.0",
@@ -12,12 +13,19 @@
         "@tailwindcss/forms": "^0.5.3",
         "@vitejs/plugin-react": "^3.0.0",
         "autoprefixer": "^10.4.12",
-        "axios": "^1.1.2",
+        "axios": "^1.4.0",
         "laravel-vite-plugin": "^0.7.5",
         "postcss": "^8.4.18",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "tailwindcss": "^3.2.1",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "@inertiajs/inertia": "^0.11.1",
+        "@reduxjs/toolkit": "^1.9.5",
+        "luxon": "^3.3.0",
+        "react-redux": "^8.1.1",
+        "react-transition-group": "^4.4.5"
     }
 }

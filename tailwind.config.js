@@ -15,6 +15,12 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            backgroundColor:{
+                "my-bg-purple": "rgb(85, 37, 208)"
+            },
+            color:{
+                "my-cl-purple": "rgb(85, 37, 208)"
+            }
         },
     },
 

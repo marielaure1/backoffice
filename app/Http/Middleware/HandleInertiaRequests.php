@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use Illuminate\Support\Facades\Session;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,11 +35,18 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => function () use ($request) {
-                return array_merge((new Ziggy)->toArray(), [
-                    'location' => $request->url(),
-                ]);
-            },
+            'token' => Session::get('jwt_token'),
+            'me' => [
+                'auth_first_name' => Session::get('auth_first_name'),
+                'auth_last_name' => Session::get('auth_last_name'),
+                'auth_role' => Session::get('auth_role'),
+            ]
+            // ,
+            // 'ziggy' => function () use ($request) {
+            //     return array_merge((new Ziggy)->toArray(), [
+            //         'location' => $request->url(),
+            //     ]);
+            // },
         ]);
     }
 }
