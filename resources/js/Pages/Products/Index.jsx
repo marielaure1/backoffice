@@ -6,21 +6,21 @@ import api from '@/Services/Api.js';
 import Modal from '@/Components/Modal';
 
 // partial reloads
-export default function Plans({ auth }) {
-    const [allPlans, setAllPlans] = useState(null);
+export default function Users({ auth }) {
+    const [allUsers, setAllUsers] = useState(null);
      const [deleteForm, setDeleteForm] = useState(false);
      const [deleteId, setDeleteId] = useState(false);
 
-    const getAllPlansFetch = async () => {
+    const getAllUsersFetch = async () => {
             
         try{
-            const response = await api.getPlansPlans();
+            const response = await api.getAllUsers();
 
-            // setAllPlans(response);
+            // setAllUsers(response);
             console.log(response);
 
-            if(response?.data?.allPlan){
-                setAllPlans(response?.data?.allPlan)
+            if(response?.data?.allUser){
+                setAllUsers(response?.data?.allUser)
             }
         } catch(error){
             console.log(error);
@@ -29,7 +29,7 @@ export default function Plans({ auth }) {
 
     useEffect( () => {
         
-        getAllPlansFetch()
+        getAllUsersFetch()
         
     }, []);
 
@@ -46,13 +46,13 @@ export default function Plans({ auth }) {
 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOnePlan(id);
+            const response = await api.deleteOneUser(id);
 
             console.log(response);
             setDeleteForm(false)
 
-            if(response?.data?.deletePlan){
-                getAllPlansFetch()
+            if(response?.data?.deleteUser){
+                getAllUsersFetch()
             }
 
             if(response?.data?.message){
@@ -68,9 +68,9 @@ export default function Plans({ auth }) {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Users</h2>}
         >
-            <Head title="Plans" />
+            <Head title="Users" />
             <div className="sm:px-6 lg:px-8">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className="p-6 text-gray-900">
@@ -78,34 +78,31 @@ export default function Plans({ auth }) {
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Titre</th>
-                                    <th>Prix</th>
-                                    <th>Publier</th>
-                                    <th>Interval</th>
+                                    <th>Nom complet</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {allPlans?.map((plan) => (
-                                <tr key={plan.id}>
-                                    <td>{plan.id}</td>
-                                    <td>{plan.title}</td>
-                                    <td>{plan.amount * 0.01}</td>
+                            {allUsers?.map((user) => (
+                                <tr key={user.id}>
+                                    <td>{user.id}</td>
+                                    <td>{user.first_name} <strong>{user.last_name}</strong></td>
+                                    <td>{user.email}</td>
                                     <td>
-                                        <span className={`badge ${plan.published == "true" ? "badge-purple" : "badge-blue"}`}>{plan.published}</span>
+                                        <span className={`badge ${user.role == "ADMIN" ? "badge-purple" : "badge-blue"}`}>{user.role}</span>
                                     </td>
-                                    <td>{plan.interval}</td>
                                     <td className='actions flex'>
-                                        <Link href={"/plans/" + plan.id} className="btn"><Icon icon="ph:eye" /></Link>
-                                        {/* <Link href="/plans/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
-                                        <button type="button"  onClick={() => { deleteConfirm(plan.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
+                                        <Link href={"/users/" + user.id} className="btn"><Icon icon="ph:eye" /></Link>
+                                        {/* <Link href="/users/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
+                                        <button type="button"  onClick={() => { deleteConfirm(user.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
                                     </td>
                                 </tr>
                             ))}
-                            
                             </tbody>
                         </table>
-                        {!allPlans &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore de plans.</p> }
+                        
                     </div>
                 </div>
 

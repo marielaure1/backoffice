@@ -21,8 +21,8 @@ class JwtToken
     {
         if (!$request->session()->has('jwt_token')) {
 
-            var_dump($request->session()->has('jwt_token'));
-            die();
+            // var_dump($request->session()->has('jwt_token'));
+            // die();
 
             return redirect('/login');
         }

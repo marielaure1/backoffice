@@ -32,7 +32,7 @@ export default function Authenticated({ user, header, children }) {
         <div className="min-h-screen bg-gray-100 flex two-column">
 
            <SideBar />
-            <div className='ml-[250px] py-[70px] relative w-full' id="main-content">
+            <div className='ml-[250px] py-[70px] relative w-full bg-gray-100' id="main-content">
                 <TopBar me={me} />
               
                 <TransitionGroup className="transition-group">

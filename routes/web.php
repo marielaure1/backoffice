@@ -1,12 +1,11 @@
 <?php
 
 // use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\PlansController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +44,9 @@ Route::middleware(['jwt'])->prefix('users')->group(function () {
 });
 
 Route::prefix('plans')->middleware(['jwt'])->group(function () {
-    Route::get('/', [PlansController::class, 'index'])->name('plans');
+    Route::get('/', function () {
+        return Inertia::render('Plans/Index');
+    })->name('plans');
     Route::post('/', [PlansController::class, 'create'])->name('plans.create');
     Route::get('/{id}', [PlansController::class, 'show'])->name('plans.show');
     Route::put('/{id}', [PlansController::class, 'update'])->name('plans.update');
