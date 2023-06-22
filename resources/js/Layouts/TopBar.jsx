@@ -9,7 +9,7 @@ export default function TopBar({ className = "",  me }) {
         <div className={ 'w-full h-[70px] bg-white fixed p-4 top-0 right-0 shadow-sm z-[9] pl-[250px] ' + className }  id="top-bar">
             {me.auth_first_name}
             
-            <Link href={route('profile.edit')}>Profile</Link>
+            {/* <Link href={route('profile.edit')}>Profile</Link> */}
             <Link href="/logout" method="post" as="button">
                 Log Out
             </Link>

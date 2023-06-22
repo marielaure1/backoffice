@@ -19,7 +19,6 @@ class UsersController extends Controller
      */
     public function index(): InertiaResponse
     {
-
         return Inertia::render('Users/Index', [
             'userPage' => "userPage",
         ]);

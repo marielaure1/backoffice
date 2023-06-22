@@ -9,7 +9,9 @@ const apiSlice = createSlice({
   },
   reducers: {
     loginSuccess: (state, action) => {
+      console.log(action);
       state.token = action.payload;
+      localStorage.setItem("token", action.payload)
       state.isLogged = true;
     },
     loginFail: (state, action) => {

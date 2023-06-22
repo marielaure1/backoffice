@@ -3,10 +3,13 @@ import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect } from "react"
 import { Icon } from '@iconify/react';
 import api from '@/Services/Api.js';
+import Modal from '@/Components/Modal';
 
 // partial reloads
 export default function Users({ auth }) {
     const [allUsers, setAllUsers] = useState(null);
+     const [deleteForm, setDeleteForm] = useState(false);
+     const [deleteId, setDeleteId] = useState(false);
 
     const getAllUsersFetch = async () => {
             
@@ -29,6 +32,39 @@ export default function Users({ auth }) {
         getAllUsersFetch()
         
     }, []);
+
+    const deleteConfirm = (id) => {
+
+        if(deleteForm){
+            setDeleteForm(false)
+            setDeleteId(false)
+        } else{
+            setDeleteForm(true)
+            setDeleteId(id)
+        }
+    }
+
+    const handleDelete = async (id) => {
+        try{
+            const response = await api.deleteOneUser(id);
+
+            console.log(response);
+            setDeleteForm(false)
+
+            if(response?.data?.deleteUser){
+                getAllUsersFetch()
+            }
+
+            if(response?.data?.message){
+                setMessage(response?.data?.message)
+            }
+
+        } catch(error){
+            console.log(error);
+            setMessage(error)
+        }
+    };
+
 
     return (
         <AuthenticatedLayout
@@ -59,8 +95,8 @@ export default function Users({ auth }) {
                                     </td>
                                     <td className='actions flex'>
                                         <Link href={"/users/" + user.id} className="btn"><Icon icon="ph:eye" /></Link>
-                                        <Link href="/users/create" className="btn"><Icon icon="ph:pencil-light" /></Link>
-                                        <Link href="/" className="btn"><Icon icon="solar:trash-bin-2-outline" /></Link>
+                                        {/* <Link href="/users/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
+                                        <button type="button"  onClick={() => { deleteConfirm(user.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
                                     </td>
                                 </tr>
                             ))}
@@ -69,6 +105,15 @@ export default function Users({ auth }) {
                         
                     </div>
                 </div>
+
+                <Modal show={deleteForm} maxWidth="lg" onClose={() => { setDeleteForm(false) }}>
+                    <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</h3>
+
+                    <div className='flex justify-center'>
+                        <button type="button" className='btn btn-red mr-4' onClick={() => { handleDelete(deleteId) }} >Supprimer</button>
+                        <button type="button" className='btn btn-light' onClick={() => { setDeleteForm(false) }}>Annuler</button>
+                    </div>
+                </Modal>
             </div>
         </AuthenticatedLayout>
     );

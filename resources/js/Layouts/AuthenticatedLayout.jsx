@@ -22,6 +22,8 @@ export default function Authenticated({ user, header, children }) {
     const dispatch = useDispatch()
 
     useEffect(() => {
+
+        console.log(token);
         dispatch(loginSuccess(token))
     }, [])
     

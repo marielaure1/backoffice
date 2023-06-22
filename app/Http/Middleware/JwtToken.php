@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class JwtToken
 {
@@ -15,14 +17,18 @@ class JwtToken
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        if ($request->session()->has('jwt_token')) {
+        if (!$request->session()->has('jwt_token')) {
 
-            return $next($request);
+            var_dump($request->session()->has('jwt_token'));
+            die();
+
+            return redirect('/login');
         }
 
-        // Jeton JWT manquant ou invalide, redirigez l'utilisateur vers la page de connexion
-        return redirect('/login');
+        
+        return $next($request);
+        
     }
 }

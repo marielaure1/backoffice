@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+// use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\PlansController;
 use App\Http\Controllers\UsersController;
@@ -19,24 +19,24 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/', function () {
+Route::middleware(['jwt'])->get('/', function () {
     return Inertia::render('Dashboard');
-})->middleware(['jwt'])->name('dashboard');
+})->name('dashboard');
 
-Route::prefix('users')->middleware(['jwt'])->group(function () {
+Route::middleware(['jwt'])->prefix('users')->group(function () {
     Route::get('/', [UsersController::class, 'index'])->name('users');
     Route::post('/', [UsersController::class, 'create'])->name('users.create');
     Route::get('/{id}', [UsersController::class, 'show'])->name('users.show');
@@ -60,10 +60,10 @@ Route::prefix('products')->middleware(['jwt'])->group(function () {
     Route::delete('/{id}', [ProductsController::class, 'delete'])->name('products.delete');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 require __DIR__.'/auth.php';

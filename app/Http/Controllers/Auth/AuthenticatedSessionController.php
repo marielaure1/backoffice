@@ -38,9 +38,6 @@ class AuthenticatedSessionController extends Controller
     
             $users = $response->json();
 
-            var_dump($user);
-                die();
-
             if ($users["token"]) {
                 $token = $users["token"];
                 $user = $users["user"];
@@ -49,18 +46,16 @@ class AuthenticatedSessionController extends Controller
                 session(['auth_first_name' => $user["first_name"]]);
                 session(['auth_last_name' => $user["last_name"]]);
                 session(['auth_role' => $user["role"]]);
-
-                // var_dump($user);
-                // die();
                 
                 return redirect()->intended('/');
                 // return redirect()->intended(RouteServiceProvider::HOME);
             }
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
-        }
 
-        return redirect()->intended('/login');
+            return redirect()->intended('/login');
+        }
+        
     }
 
     /**

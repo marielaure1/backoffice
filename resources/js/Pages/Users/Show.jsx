@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/react';
 import { useState, useEffect } from "react"
 import { Icon } from '@iconify/react';
 import { DateTime } from "luxon";
-import { usePage } from '@inertiajs/react';
+import { usePage, router } from '@inertiajs/react';
 // import { useHistory } from "react-router-dom";
 import { Inertia } from '@inertiajs/inertia';
 import api from '@/Services/Api.js';
@@ -123,6 +123,7 @@ export default function Show({ auth, id }) {
 
             if(response?.data?.updateUser){
                 setUpdatePassword(null)
+                // history.push("/users")
             }
 
             if(response?.data?.error){
@@ -147,8 +148,24 @@ export default function Show({ auth, id }) {
         deleteForm ? setDeleteForm(false) : setDeleteForm(true)
     }
 
-    const handleDelete = (id) => {
-        console.log(id);
+    const handleDelete = async (id) => {
+        try{
+            const response = await api.deleteOneUser(id);
+
+            console.log(response);
+
+            if(response?.data?.deleteUser){
+                router.get('/users')
+            }
+
+            if(response?.data?.message){
+                setMessage(response?.data?.message)
+            }
+
+        } catch(error){
+            console.log(error);
+            setMessage(error)
+        }
     };
 
     return (

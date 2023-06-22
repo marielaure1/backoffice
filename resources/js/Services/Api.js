@@ -1,8 +1,10 @@
 import axios from 'axios';
 import store from '../Stores/store';
 
-const token = store.getState().token
+// const token = store.getState().token
+const token = localStorage.getItem("token")
 
+console.log(token);
 const URL = "http://localhost:3001/api"
 
 const users = axios.create({
