@@ -1,26 +1,43 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Icon } from '@iconify/react';
 import api from '@/Services/Api.js';
 import Modal from '@/Components/Modal';
+import { usePage } from '@inertiajs/react'
+import { CloudinaryContext, Image } from 'cloudinary-react';
+import Loading from '@/Components/Loading';
+import Medias from '@/Components/Medias';
+import { Blank } from "../../../medias"
+
 
 // partial reloads
 export default function Plans({ auth }) {
     const [allPlans, setAllPlans] = useState(null);
      const [deleteForm, setDeleteForm] = useState(false);
      const [deleteId, setDeleteId] = useState(false);
+     const [createForm, setCreateForm] = useState(false);
+     const [getData, setData] = useState(null);
+     const [getCreateData, setCreateData] = useState(null);
+     const [getCreateDataError, setCreateDataError] = useState(null);
+     const [getMessage, setMessage] = useState(false);
+     const [openModal, setOpenModal] = useState(false)
+     const [isLoading, setIsLoading] = useState(false)
+
+     const handleOpenModal = () => {
+        setOpenModal(true);
+      };
 
     const getAllPlansFetch = async () => {
             
         try{
-            const response = await api.getPlansPlans();
+            const response = await api.getPlans();
 
             // setAllPlans(response);
             console.log(response);
 
-            if(response?.data?.allPlan){
-                setAllPlans(response?.data?.allPlan)
+            if(response?.data?.allPlans){
+                setAllPlans(response?.data?.allPlans)
             }
         } catch(error){
             console.log(error);
@@ -32,6 +49,61 @@ export default function Plans({ auth }) {
         getAllPlansFetch()
         
     }, []);
+
+    const createModal = (id) => {
+
+        if(createForm){
+            setCreateForm(false)
+            setOpenModal(false)
+        } else{
+            setCreateForm(true)
+        }
+    }
+
+    const handleChangeData = async (e) => {
+        e.preventDefault()
+
+        let { id, value } = e.target
+
+        setCreateData((prev) => ({
+            ...prev,
+            title: id === 'title' ? value : prev?.title,
+            amount: id === 'amount' ? value : prev?.amount,
+            slug: id === 'slug' ? value : prev?.slug,
+            interval: id === 'interval' ? value : prev?.interval,
+            published: id === 'published' ? value : prev?.published,
+            description: id === 'description' ? value : prev?.description
+        }));
+    }
+
+    const handleCreate = async () => {
+
+        setIsLoading(true); 
+
+        try{
+            const response = await api.createOnePlan(getCreateData);
+
+            console.log(response);
+            
+
+            if(response?.data?.createPlans){
+                getAllPlansFetch()
+                setMessage(response?.data?.message)
+                setCreateForm(false)
+                setOpenModal(false)
+            }
+
+            if(response?.data?.message){
+                setMessage(response?.data?.message)
+            }
+
+        } catch(error){
+            console.log(error);
+            setMessage(error)
+        }
+
+        setIsLoading(false); 
+    };
 
     const deleteConfirm = (id) => {
 
@@ -65,15 +137,37 @@ export default function Plans({ auth }) {
         }
     };
 
+    const handleChooseImage = (url) => {
+        setCreateData((prev) => ({
+            ...prev,
+            image: url
+        }));
+
+        setOpenModal(false)
+    };
 
     return (
         <AuthenticatedLayout
             header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
         >
             <Head title="Plans" />
+            <Loading show={isLoading} />
             <div className="sm:px-6 lg:px-8">
+
+                <div className='flex justify-between page-title'>
+
+                    <h1 className='title'>Plans </h1>
+
+                    <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button>
+                </div>
+
+                {getMessage && (
+                    <div className="success-message">{getMessage}</div>
+                )}
+              
+
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div className="p-6 text-gray-900">
+                    <div className="p-6 text-gray-900 overflow-x-auto">
                         <table className='w-full'>
                             <thead>
                                 <tr>
@@ -90,9 +184,9 @@ export default function Plans({ auth }) {
                                 <tr key={plan.id}>
                                     <td>{plan.id}</td>
                                     <td>{plan.title}</td>
-                                    <td>{plan.amount * 0.01}</td>
+                                    <td>{plan.amount * 0.01} €</td>
                                     <td>
-                                        <span className={`badge ${plan.published == "true" ? "badge-purple" : "badge-blue"}`}>{plan.published}</span>
+                                        <span className={`badge ${plan.published == true ? "badge-green" : "badge-red"}`}>{plan.published == true ? "OUI" : "NON"}</span>
                                     </td>
                                     <td>{plan.interval}</td>
                                     <td className='actions flex'>
@@ -109,12 +203,83 @@ export default function Plans({ auth }) {
                     </div>
                 </div>
 
+                <Modal show={createForm} maxWidth={openModal ? "6xl" : "2xl"} onClose={() => { setCreateForm(false) }}>
+                    <h3 className='text-center font-bold mb-5'>Créer un nouveau plan</h3>
+
+                    <form className={`p-6 text-gray-900 w-full form-without-media ${openModal ? "" : "show"}`}>
+                       
+                       <div className='block gap-4 w-full'  style={{ maxHeight: "calc(100vh - 320px)", overflowY: "auto" }}>
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-4'>
+                                <div className="form-img">
+                                    <div className="card-img">
+                                        <img src={getCreateData?.image || Blank} alt="" />
+                                    </div>
+                                </div>
+                                <p className='error'>{getCreateDataError?.image}</p>
+                            </div>
+                          
+                            <div className='col-span-1 flex justify-center lg:mb-0 mb-4'>
+                                <button type="button" onClick={handleOpenModal} className='btn btn-purple mt-3'>
+                                    {!getCreateData?.image ? "Ajouter une image" : "Modifier l'image"}
+                                </button>
+                                <p className='error'>{getCreateDataError?.image}</p>
+                            </div>
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-4'>
+                                <label htmlFor="title" className='mb-2'>Titre</label>
+                                <input type="text" defaultValue={getCreateData?.title} name="title" id="title" onChange={handleChangeData}/>
+                                <p className='error'>{getCreateDataError?.title}</p>
+                            </div>
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
+                                <label htmlFor="amount" className='mb-2' min="0.01" max="1000">Prix</label>
+                                <input type="number" defaultValue={getCreateData?.amount} name="amount" id="amount" onChange={handleChangeData} />
+                                <p className='error'>{getCreateDataError?.amount}</p>
+                            </div>
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
+                                <label htmlFor="slug" className='mb-2'>Slug</label>
+                                <input type="text" defaultValue={getCreateData?.slug} name="slug" id="slug" onChange={handleChangeData} />
+                                <p className='error'>{getCreateDataError?.slug}</p>
+                            </div>
+                            
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
+                                <label htmlFor="interval" className='mb-2'>Interval</label>
+                                <select name="interval" id="interval" defaultValue={getCreateData?.interval} onChange={handleChangeData}>
+                                    <option value="month">Mois</option>
+                                    <option value="year">Année</option>
+                                </select>
+                                <p className='error'>{getCreateDataError?.interval}</p>
+                            </div>
+
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
+                                <label htmlFor="published" className='mb-2'>Publier</label>
+                                <select name="published" id="published" defaultValue={getCreateData?.published} onChange={handleChangeData}>
+                                    <option value={true}>Oui</option>
+                                    <option value={false}>Non</option>
+                                </select>
+                                <p className='error'>{getCreateDataError?.published}</p>
+                            </div>
+
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
+                                <label htmlFor="description" className='mb-2'>Description</label>
+                                <textarea defaultValue={getCreateData?.description}  name="description" id="description" onChange={handleChangeData}></textarea>
+                                <p className='error'>{getCreateDataError?.description}</p>
+                            </div>
+                       </div>
+                   </form>
+
+                   <Medias newClassName={`${openModal ? "show" : ""}`} chooseImage={handleChooseImage} />
+
+                    <div className='flex justify-center'>
+                        <button type="button" className={`btn btn-red mr-4 btn-show ${openModal ? "" : "show"}`} onClick={() => { handleCreate() }} >Ajouter</button>
+                        <button type="button" className='btn btn-light' onClick={() => { setCreateForm(false); setOpenModal(false); }}>Annuler</button>
+                    </div>
+                </Modal>
+
                 <Modal show={deleteForm} maxWidth="lg" onClose={() => { setDeleteForm(false) }}>
                     <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</h3>
 
                     <div className='flex justify-center'>
                         <button type="button" className='btn btn-red mr-4' onClick={() => { handleDelete(deleteId) }} >Supprimer</button>
-                        <button type="button" className='btn btn-light' onClick={() => { setDeleteForm(false) }}>Annuler</button>
+                        <button type="button" className='btn btn-light' onClick={() => { setDeleteForm(false)}}>Annuler</button>
                     </div>
                 </Modal>
             </div>

@@ -168,7 +168,7 @@ export default function Users({ auth }) {
 
                     <h1 className='title'>Utilisateurs</h1>
                     
-                    <button type="button"  onClick={createModal} >Ajouter +</button>
+                    <button type="button"  onClick={createModal} className='btn btn-light' >Ajouter +</button>
                 </div>
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className="p-6 text-gray-900 overflow-x-auto">

@@ -11,7 +11,16 @@ const users = axios.create({
   baseURL: `${URL}/users`
 });
 
-console.log(users);
+const plans = axios.create({
+  baseURL: `${URL}/plans`
+});
+
+const medias = axios.create({
+  baseURL: `${URL}/medias`,
+  // headers: {
+  //   "Content-Type" : "multipart/form-data"
+  // }
+});
 
 export default {
   // Users
@@ -23,11 +32,16 @@ export default {
   deleteOneUser : async (id) => users.delete(`/${id}`, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
   
    // Plans
-   getPlansUsers : async () => plans.get(``, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
+   getPlans : async () => plans.get(``, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
    getOnePlan : async (id) => plans.get(`/${id}`, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
    createOnePlan : async (data) => plans.post(``, data, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
    updateOnePlan : async (data, id) => plans.put(`/${id}`, data, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
    deleteOnePlan : async (id) => plans.delete(`/${id}`, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
+
+   // Medias
+   getMedias : async () => medias.get(``, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
+   createOneMedia : async (data) => medias.post(``, data, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
+   deleteOneMedia : async (id) => medias.delete(`/${id}`, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
 
 
 

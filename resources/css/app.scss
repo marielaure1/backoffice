@@ -10,6 +10,8 @@ $cl-purple-3: #ab95ff;
 $cl-pink: rgb(199, 42, 199);
 $cl-blue: rgb(0, 157, 255);
 $cl-blue-2: rgb(226, 245, 255);
+$cl-green: rgb(0, 209, 0);
+$cl-green-2: rgb(228, 247, 238);
 $cl-dark: #202646;
 $cl-dark-2: #57585c;
 $cl-grey: #cfcfcf;
@@ -84,6 +86,16 @@ td.actions a{
 .badge-purple{
     background-color: $cl-purple-2;
     color: $cl-pink;
+}
+
+.badge-red{
+    background-color: $cl-red-2;
+    color: $cl-red;
+}
+
+.badge-green{
+    background-color: $cl-green-2;
+    color: $cl-green;
 }
 
 .page-title{
@@ -199,21 +211,147 @@ input:focus, select:focus, textarea:focus{
   }
 
   .success-message{
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: 30;
+    z-index: 51;
     background-color: green;
     color: white;
     padding: 20px;
   }
 
   .error-message{
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: 30;
+    z-index: 51;
     background-color: crimson;
     color: white;
     padding: 20px;
   }
+
+#medias-list{
+    .card{
+        aspect-ratio: 3/2;
+        position: relative;
+        overflow: hidden;
+
+        .card-img{
+            width: 100%;
+            height: 100%;
+
+            img{
+                object-fit: cover;
+                height: 100%;
+                width: 100%;
+                border-radius: 10px;
+            }
+        }
+
+        .card-infos{
+            opacity: 0;
+            position: absolute;
+            top: 100px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(237, 237, 237, 0.753);
+            padding: 20px; 
+            transition: 0.5s;
+
+            p{
+                word-wrap: break-word;
+                margin-bottom: 5px;
+            }
+        }
+
+        .card-infos:hover{
+            top: 0;
+            opacity: 1;
+        }
+    }
+}
+
+#loading{
+    width: 100%;
+    height: 100%;
+    z-index: 60;
+    left: 0;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.591);
+
+    img{
+        width: 80px;
+    }
+}
+
+.medias-modal{
+    display: none;
+}
+
+.medias-modal.show{
+    display: block;
+}
+
+.form-without-media{
+    display: none;
+}
+
+.form-without-media.show{
+    display: block;
+}
+
+.btn-show{
+    display: none;
+}
+
+.btn-show.show{
+    display: block;
+}
+
+.form-img{
+    aspect-ratio: 3/2;
+    position: relative;
+    overflow: hidden;
+
+    .card-img{
+        width: 100%;
+        height: 100%;
+
+        img{
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+            border-radius: 10px;
+        }
+    }
+}
+
+.drag-drop{
+    aspect-ratio: 4/2;
+    position: relative;
+    border: 2px dashed rgb(213, 213, 213);
+    border-radius: 15px;
+
+    & > div{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        img{
+            width: 200px;
+        }
+    }
+
+    input{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+}

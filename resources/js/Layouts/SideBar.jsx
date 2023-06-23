@@ -40,6 +40,10 @@ export default function SideBar({ className = "", activeLink = "" }) {
                     <Icon icon="la:user-solid" />
                     <p>Plans</p>
                 </Link>
+                <Link href="/medias" className={ `widget ${getActiveLink == "medias" ? "active" : ""}`}>
+                    <Icon icon="la:user-solid" />
+                    <p>Medias</p>
+                </Link>
                 <Link href="/subscriptions" className={ `widget ${getActiveLink == "subscriptions" ? "active" : ""}`}>
                     <Icon icon="la:user-solid" />
                     <p>Abonnées</p>

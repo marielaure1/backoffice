@@ -47,10 +47,15 @@ Route::prefix('plans')->middleware(['jwt'])->group(function () {
     Route::get('/', function () {
         return Inertia::render('Plans/Index');
     })->name('plans');
-    Route::post('/', [PlansController::class, 'create'])->name('plans.create');
-    Route::get('/{id}', [PlansController::class, 'show'])->name('plans.show');
-    Route::put('/{id}', [PlansController::class, 'update'])->name('plans.update');
-    Route::delete('/{id}', [PlansController::class, 'delete'])->name('plans.delete');
+    Route::get('/{id}', function () {
+        return Inertia::render('Plans/Show');
+    })->name('plans.show');
+});
+
+Route::prefix('medias')->middleware(['jwt'])->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Medias/Index');
+    })->name('medias');
 });
 
 Route::prefix('products')->middleware(['jwt'])->group(function () {

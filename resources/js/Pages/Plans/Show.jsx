@@ -12,9 +12,7 @@ import api from '@/Services/Api.js';
 export default function Show({ auth, id }) {
     const [getData, setData] = useState(null);
     const [getUpdateData, setUpdateData] = useState(null);
-    const [getUpdatePassword, setUpdatePassword] = useState(null);
     const [getUpdateDataError, setUpdateDataError] = useState(null);
-    const [getUpdatePasswordError, setUpdatePasswordError] = useState(null);
     const [formActive, setFormActive] = useState("");
     const [deleteForm, setDeleteForm] = useState(false);
     const [getMessage, setMessage] = useState(false);
@@ -26,16 +24,16 @@ export default function Show({ auth, id }) {
         window.history.back();
     };
 
-    const getOneUserFetch = async () => {
+    const getOnePlanFetch = async () => {
             
         try{
-            const response = await api.getOneUser(id);
+            const response = await api.getOnePlan(id);
 
             console.log(response);
 
-            if(response?.data?.showUser){
-                setData(response?.data?.showUser)
-                setUpdateData(response?.data?.showUser)
+            if(response?.data?.showPlan){
+                setData(response?.data?.showPlan)
+                setUpdateData(response?.data?.showPlan)
             }
 
             setMessage("")
@@ -47,7 +45,7 @@ export default function Show({ auth, id }) {
 
     useEffect( () => {
         console.log(url);
-        getOneUserFetch()
+        getOnePlanFetch()
         
     }, []); 
 
@@ -75,55 +73,17 @@ export default function Show({ auth, id }) {
         }));
     }
 
-    const handleChangePassword = (e) => {
-        let { id, value } = e.target
-
-        setUpdatePassword((prev) => ({
-            ...prev,
-            currentPassword: id === 'currentPassword' ? value : prev?.currentPassword,
-            newPassword: id === 'newPassword' ? value : prev?.newPassword,
-            verifPassword: id === 'verifPassword' ? value : prev?.verifPassword,
-        }));
-    }
-
     const handleSubmitData = async (e) => {
         e.preventDefault()
         
         try{
-            const response = await api.updateOneUser(getUpdateData, id);
+            const response = await api.updateOnePlan(getUpdateData, id);
 
             console.log(response);
 
-            if(response?.data?.updateUser){
-                setData(response?.data?.updateUser)
-                setUpdateData(response?.data?.updateUser)
-            }
-
-            if(response?.data?.error){
-                setUpdateDataError(response?.data?.error)
-            }
-
-            if(response?.data?.message){
-                setMessage(response?.data?.message)
-            }
-        } catch(error){
-            console.log(error);
-            setMessage(error)
-        }
-
-    };
-
-    const handleSubmitPassword = async (e) => {
-        e.preventDefault()
-        
-        try{
-            const response = await api.updateOneUserPassword(getUpdatePassword, id);
-
-            console.log(response);
-
-            if(response?.data?.updateUser){
-                setUpdatePassword(null)
-                // history.push("/users")
+            if(response?.data?.updatePlan){
+                setData(response?.data?.updatePlan)
+                setUpdateData(response?.data?.updatePlan)
             }
 
             if(response?.data?.error){
@@ -150,12 +110,12 @@ export default function Show({ auth, id }) {
 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOneUser(id);
+            const response = await api.deleteOnePlan(id);
 
             console.log(response);
 
-            if(response?.data?.deleteUser){
-                router.get('/users')
+            if(response?.data?.deletePlan){
+                router.get('/plans')
             }
 
             if(response?.data?.message){
@@ -170,10 +130,10 @@ export default function Show({ auth, id }) {
 
     return (
         <AuthenticatedLayout
-            user={auth.user}
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Users</h2>}
+            plan={auth.plan}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
         >
-            <Head title="Users" />
+            <Head title="Plans" />
             <div className="sm:px-6 lg:px-8">
                 <div className='flex items-center page-title'>
                     <Link href="#" onClick={goBack} className='go-back'>
@@ -265,39 +225,6 @@ export default function Show({ auth, id }) {
                                 <button type="submit" className='btn btn-purple mb-2'>Valider</button>
                             </div>
                        </div>
-                   </form>
-                </div>
-
-                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4 block-data">
-                    <div className={`p-6 text-gray-900 w-full block-content  ${formActive == "mdp-form" ? "" : "active"}`}>
-                       
-                        <h2 className="flex items-center font-semibold mb-3">Mot de passe <button type="button" className='ml-4' onClick={() => openForm("mdp-form")}><Icon icon="ph:pencil-light" /></button></h2>
-                        <p><strong>*********</strong></p>
-                    </div>
-
-                    <form onSubmit={handleSubmitPassword}  className={`p-6 text-gray-900 block-content ${formActive == "mdp-form" ? "active" : ""}`}>
-                        <div className='lg:grid grid-cols-2 gap-4 w-full'>
-                            <h2 className="flex items-center font-semibold col-span-2 lg:mb-0 mb-2">Mot de passe <button type="button" className='ml-4' onClick={() => openForm("mdp")}><Icon icon="system-uicons:cross" /></button></h2>
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="currentPassword" className='mb-2'>Mot de passe actuel</label>
-                                <input type="password" name="currentPassword" id="currentPassword" placeholder='******' defaultValue={getUpdatePassword?.currentPassword} onChange={handleChangePassword}/>
-                                <p className='error'>{ getUpdateDataError?.currentPasswordError }</p>
-                            </div>
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="newPassword" className='mb-2'>Nouveau mot de passe</label>
-                                <input type="password" name="newPassword" id="newPassword" placeholder='******' defaultValue={getUpdatePassword?.newPassword} onChange={handleChangePassword}/>
-                                <p className='error'>{ getUpdateDataError?.newPasswordError }</p>
-                            </div>
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="verifPassowrd" className='mb-2'>Confirmation du nouveau mot de passe</label>
-                                <input type="password" name="verifPassword" id="verifPassword" placeholder='******' defaultValue={getUpdatePassword?.verifPassword} onChange={handleChangePassword}/>
-                                <p className='error'>{ getUpdateDataError?.verifPasswordError }</p>
-                            </div>
-                          
-                            <div className='col-span-2 flex justify-end pt-2'>
-                                <button type="submit" className='btn btn-purple mb-2'>Valider</button>
-                            </div>
-                        </div>
                    </form>
                 </div>
 
