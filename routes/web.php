@@ -47,8 +47,10 @@ Route::prefix('plans')->middleware(['jwt'])->group(function () {
     Route::get('/', function () {
         return Inertia::render('Plans/Index');
     })->name('plans');
-    Route::get('/{id}', function () {
-        return Inertia::render('Plans/Show');
+    Route::get('/{id}', function (int $id) {
+        return Inertia::render('Plans/Show', [
+            "id" => $id
+        ]);
     })->name('plans.show');
 });
 
