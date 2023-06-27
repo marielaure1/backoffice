@@ -32,7 +32,7 @@ export default function SideBar({ className = "", activeLink = "" }) {
                     <Icon icon="la:user-solid" />
                     <p>Produits</p>
                 </Link>
-                <Link href="/posts" className={ `widget ${getActiveLink == "posts" ? "active" : ""}`}>
+                <Link href="/articles" className={ `widget ${getActiveLink == "posts" ? "active" : ""}`}>
                     <Icon icon="la:user-solid" />
                     <p>Articles</p>
                 </Link>
@@ -44,7 +44,7 @@ export default function SideBar({ className = "", activeLink = "" }) {
                     <Icon icon="la:user-solid" />
                     <p>Medias</p>
                 </Link>
-                <Link href="/subscriptions" className={ `widget ${getActiveLink == "subscriptions" ? "active" : ""}`}>
+                <Link href="/abonnements" className={ `widget ${getActiveLink == "subscriptions" ? "active" : ""}`}>
                     <Icon icon="la:user-solid" />
                     <p>Abonnées</p>
                 </Link>
@@ -52,9 +52,17 @@ export default function SideBar({ className = "", activeLink = "" }) {
                     <Icon icon="la:user-solid" />
                     <p>Collections</p>
                 </Link>
-                <Link href="/promos-code" className={ `widget ${getActiveLink == "promos-code" ? "active" : ""}`}>
+                <Link href="/categories" className={ `widget ${getActiveLink == "collections" ? "active" : ""}`}>
+                    <Icon icon="la:user-solid" />
+                    <p>Catégories</p>
+                </Link>
+                <Link href="/promos-codes" className={ `widget ${getActiveLink == "promos-code" ? "active" : ""}`}>
                     <Icon icon="la:user-solid" />
                     <p>Codes promos</p>
+                </Link>
+                <Link href="/commandes" className={ `widget ${getActiveLink == "orders" ? "active" : ""}`}>
+                    <Icon icon="la:user-solid" />
+                    <p>Commandes</p>
                 </Link>
                 <Link href="/orders" className={ `widget ${getActiveLink == "orders" ? "active" : ""}`}>
                     <Icon icon="la:user-solid" />

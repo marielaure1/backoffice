@@ -14,8 +14,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 // partial reloads
-export default function Plans({ auth }) {
-    const [allPlans, setAllPlans] = useState(null);
+export default function Abonnements({ auth }) {
+    const [allAbonnements, setAllAbonnements] = useState(null);
      const [deleteForm, setDeleteForm] = useState(false);
      const [deleteId, setDeleteId] = useState(false);
      const [createForm, setCreateForm] = useState(false);
@@ -49,17 +49,17 @@ export default function Plans({ auth }) {
         setOpenModal(true);
       };
 
-    // Récupérer tous mles plans
-    const getAllPlansFetch = async () => {
+    // Récupérer tous mles Abonnements
+    const getAllAbonnementsFetch = async () => {
             
         try{
-            const response = await api.getPlans();
+            const response = await api.getAbonnements();
 
-            // setAllPlans(response);
+            // setAllAbonnements(response);
             console.log(response);
 
-            if(response?.data?.allPlans){
-                setAllPlans(response?.data?.allPlans)
+            if(response?.data?.allAbonnements){
+                setAllAbonnements(response?.data?.allAbonnements)
             }
         } catch(error){
             console.log(error);
@@ -69,102 +69,102 @@ export default function Plans({ auth }) {
     // Init
     useEffect( () => {
         
-        getAllPlansFetch()
+        getAllAbonnementsFetch()
 
-        setCreateData((prev) => ({
-            ...prev,
-            interval: "month",
-            published: true
-        }));
+        // setCreateData((prev) => ({
+        //     ...prev,
+        //     interval: "month",
+        //     published: true
+        // }));
         
     }, []);
 
-    useEffect( () => {
+    // useEffect( () => {
         
-        console.log(getCreateData);
+    //     console.log(getCreateData);
         
-    }, [getCreateData]);
+    // }, [getCreateData]);
 
-    // Create Modal
-    const createModal = (id) => {
+    // // Create Modal
+    // const createModal = (id) => {
 
-        if(createForm){
-            setCreateForm(false)
-            setOpenModal(false)
-        } else{
-            setCreateForm(true)
-        }
-    }
+    //     if(createForm){
+    //         setCreateForm(false)
+    //         setOpenModal(false)
+    //     } else{
+    //         setCreateForm(true)
+    //     }
+    // }
 
-    // Create Change Data
-    const handleChangeData = async (e) => {
-        e.preventDefault()
+    // // Create Change Data
+    // const handleChangeData = async (e) => {
+    //     e.preventDefault()
 
-        let { id, value } = e.target
+    //     let { id, value } = e.target
 
-        setCreateData((prev) => ({
-            ...prev,
-            title: id === 'title' ? value : prev?.title,
-            amount: id === 'amount' ? value : prev?.amount,
-            slug: id === 'slug' ? value : prev?.slug,
-            interval: id === 'interval' ? value : prev?.interval,
-            published: id === 'published' ? e.target?.checked : prev?.published,
-            // description: id === 'description' ? value : prev?.description
-        }));
-    }
+    //     setCreateData((prev) => ({
+    //         ...prev,
+    //         title: id === 'title' ? value : prev?.title,
+    //         amount: id === 'amount' ? value : prev?.amount,
+    //         slug: id === 'slug' ? value : prev?.slug,
+    //         interval: id === 'interval' ? value : prev?.interval,
+    //         published: id === 'published' ? e.target?.checked : prev?.published,
+    //         // description: id === 'description' ? value : prev?.description
+    //     }));
+    // }
 
-    const handleChangeWYSIWYG = async (value) => {
+    // const handleChangeWYSIWYG = async (value) => {
 
-        setCreateData((prev) => ({
-            ...prev,
-            description: value
-        }));
-    }
+    //     setCreateData((prev) => ({
+    //         ...prev,
+    //         description: value
+    //     }));
+    // }
 
-    // Create submit
-    const handleCreate = async () => {
+    // // Create submit
+    // const handleCreate = async () => {
 
-        setIsLoading(true); 
+    //     setIsLoading(true); 
 
-        try{
-            const response = await api.createOnePlan(getCreateData);
+    //     try{
+    //         const response = await api.createOneAbonnement(getCreateData);
 
-            console.log(response);
+    //         console.log(response);
             
 
-            if(response?.data?.errors){
-                setCreateDataError(response?.data?.errors)
+    //         if(response?.data?.errors){
+    //             setCreateDataError(response?.data?.errors)
                 
-            }
+    //         }
 
-            if(response?.data?.error){
-                setMessage(response?.data?.error)
+    //         if(response?.data?.error){
+    //             setMessage(response?.data?.error)
                 
-                setTimeout(() => {
-                    setMessage(false)
-                }, 5000);
-            }
+    //             setTimeout(() => {
+    //                 setMessage(false)
+    //             }, 5000);
+    //         }
 
-            if(response?.data?.message){
-                setMessage(response?.data?.message)
+    //         if(response?.data?.message){
+    //             setMessage(response?.data?.message)
 
-                setTimeout(() => {
-                    setMessage(false)
-                }, 5000);
+    //             setTimeout(() => {
+    //                 setMessage(false)
+    //             }, 5000);
 
-                if(response?.data?.createPlans){
-                    setCreateForm(false)
-                    setOpenModal(false)
-                }
-            }
+    //             if(response?.data?.createAbonnements){
+    //                 setCreateForm(false)
+    //                 setOpenModal(false)
+    //             }
+    //         }
 
-        } catch(error){
-            console.log(error);
-            setMessage(error)
-        }
+    //     } catch(error){
+    //         console.log(error);
+    //         setMessage(error)
+    //     }
 
-        setIsLoading(false); 
-    };
+    //     setIsLoading(false); 
+    // };
 
     // Suppression - Modal
     const deleteConfirm = (id) => {
@@ -181,7 +181,7 @@ export default function Plans({ auth }) {
     // Suppresion 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOnePlan(id);
+            const response = await api.deleteOneAbonnement(id);
 
             console.log(response);
             setDeleteForm(false)
@@ -195,8 +195,8 @@ export default function Plans({ auth }) {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.deletePlan){
-                    getAllPlansFetch()
+                if(response?.data?.deleteAbonnement){
+                    getAllAbonnementsFetch()
                 }
             }
 
@@ -215,29 +215,29 @@ export default function Plans({ auth }) {
         }
     };
 
-    // Create choose image
-    const handleChooseImage = (url) => {
-        setCreateData((prev) => ({
-            ...prev,
-            image: url
-        }));
+    // // Create choose image
+    // const handleChooseImage = (url) => {
+    //     setCreateData((prev) => ({
+    //         ...prev,
+    //         image: url
+    //     }));
 
-        setOpenModal(false)
-    };
+    //     setOpenModal(false)
+    // };
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Abonnements</h2>}
         >
-            <Head title="Plans" />
+            <Head title="Abonnements" />
             <Loading show={isLoading} />
             <div className="sm:px-6 lg:px-8">
 
                 <div className='flex justify-between page-title'>
 
-                    <h1 className='title'>Plans </h1>
+                    <h1 className='title'>Abonnements </h1>
 
-                    <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button>
+                    {/* <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button> */}
                 </div>
 
                 {getMessage && (
@@ -251,39 +251,38 @@ export default function Plans({ auth }) {
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Titre</th>
-                                    <th>Prix</th>
-                                    <th>Publier</th>
-                                    <th>Interval</th>
+                                    <th>Utilisateur</th>
+                                    <th>Plan</th>
+                                    <th>Subscription</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {allPlans?.map((plan) => (
-                                <tr key={plan.id}>
-                                    <td>{plan.id}</td>
-                                    <td>{plan.title}</td>
-                                    <td>{plan.amount * 0.01} €</td>
+                            {allAbonnements?.map((abonnements) => (
+                                <tr key={abonnements.id}>
+                                    <td>{abonnements.id}</td>
+                                    <td>{abonnements.title}</td>
+                                    <td>{abonnements.amount * 0.01} €</td>
                                     <td>
-                                        <span className={`badge ${plan.published == true ? "badge-green" : "badge-red"}`}>{plan.published == true ? "OUI" : "NON"}</span>
+                                        <span className={`badge ${abonnements.published == true ? "badge-green" : "badge-red"}`}>{abonnements.published == true ? "OUI" : "NON"}</span>
                                     </td>
-                                    <td>{plan.interval}</td>
+                                    <td>{abonnements.interval}</td>
                                     <td className='actions flex'>
-                                        <Link href={"/plans/" + plan.id} className="btn"><Icon icon="ph:eye" /></Link>
-                                        {/* <Link href="/plans/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
-                                        <button type="button"  onClick={() => { deleteConfirm(plan.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
+                                        <Link href={"/abonnementss/" + abonnements.id} className="btn"><Icon icon="ph:eye" /></Link>
+                                        {/* <Link href="/abonnementss/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
+                                        <button type="button"  onClick={() => { deleteConfirm(abonnements.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
                                     </td>
                                 </tr>
                             ))}
                             
                             </tbody>
                         </table>
-                        {!allPlans &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore de plans.</p> }
+                        {!allAbonnements &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore d'abonnements.</p> }
                     </div>
                 </div>
 
-                <Modal show={createForm} maxWidth={openModal ? "6xl" : "2xl"} onClose={() => { setCreateForm(false) }}>
-                    <h3 className='text-center font-bold mb-5'>Créer un nouveau plan</h3>
+                {/* <Modal show={createForm} maxWidth={openModal ? "6xl" : "2xl"} onClose={() => { setCreateForm(false) }}>
+                    <h3 className='text-center font-bold mb-5'>Créer un nouveau Abonnement</h3>
 
                     <form className={`p-6 text-gray-900 w-full form-without-media ${openModal ? "" : "show"}`}>
                        
@@ -347,7 +346,7 @@ export default function Plans({ auth }) {
                         <button type="button" className={`btn btn-red mr-4 btn-show ${openModal ? "" : "show"}`} onClick={() => { handleCreate() }} >Ajouter</button>
                         <button type="button" className='btn btn-light' onClick={() => { setCreateForm(false); setOpenModal(false); }}>Annuler</button>
                     </div>
-                </Modal>
+                </Modal> */}
 
                 <Modal show={deleteForm} maxWidth="lg" onClose={() => { setDeleteForm(false) }}>
                     <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</h3>

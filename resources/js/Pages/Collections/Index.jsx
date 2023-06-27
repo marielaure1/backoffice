@@ -12,10 +12,11 @@ import { Blank } from "../../../medias"
 import Switch from '@mui/material/Switch';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { DateTime } from 'luxon';
 
 // partial reloads
-export default function Plans({ auth }) {
-    const [allPlans, setAllPlans] = useState(null);
+export default function Collections({ auth }) {
+    const [allCollections, setAllCollections] = useState(null);
      const [deleteForm, setDeleteForm] = useState(false);
      const [deleteId, setDeleteId] = useState(false);
      const [createForm, setCreateForm] = useState(false);
@@ -25,41 +26,23 @@ export default function Plans({ auth }) {
      const [getMessage, setMessage] = useState(false);
      const [openModal, setOpenModal] = useState(false)
      const [isLoading, setIsLoading] = useState(false)
-
-     const editorOptions = {
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image'],
-            ['clean'],
-          ],
-        },
-        formats: [
-          'header',
-          'bold', 'italic', 'underline', 'strike', 'blockquote',
-          'list', 'bullet',
-          'link', 'image',
-        ],
-      };
       
 
      const handleOpenModal = () => {
         setOpenModal(true);
       };
 
-    // Récupérer tous mles plans
-    const getAllPlansFetch = async () => {
+    // Récupérer tous mles collections
+    const getAllCollectionsFetch = async () => {
             
         try{
-            const response = await api.getPlans();
+            const response = await api.getCollections();
 
-            // setAllPlans(response);
+            // setAllCollections(response);
             console.log(response);
 
-            if(response?.data?.allPlans){
-                setAllPlans(response?.data?.allPlans)
+            if(response?.data?.allCollection){
+                setAllCollections(response?.data?.allCollection)
             }
         } catch(error){
             console.log(error);
@@ -69,7 +52,7 @@ export default function Plans({ auth }) {
     // Init
     useEffect( () => {
         
-        getAllPlansFetch()
+        getAllCollectionsFetch()
 
         setCreateData((prev) => ({
             ...prev,
@@ -102,23 +85,24 @@ export default function Plans({ auth }) {
 
         let { id, value } = e.target
 
-        setCreateData((prev) => ({
-            ...prev,
-            title: id === 'title' ? value : prev?.title,
-            amount: id === 'amount' ? value : prev?.amount,
-            // slug: id === 'slug' ? value : prev?.slug,
-            interval: id === 'interval' ? value : prev?.interval,
-            published: id === 'published' ? e.target?.checked : prev?.published,
-            // description: id === 'description' ? value : prev?.description
-        }));
-    }
+        if(id === 'limite'){
+            const limiteDateTime = DateTime.fromISO(value, { zone: 'Europe/Paris' });
+            limiteDateTime.toJSDate()
 
-    const handleChangeWYSIWYG = async (value) => {
+            setCreateData((prev) => ({
+                ...prev,
+                limite: limiteDateTime,
+            }));
+        } else {
 
-        setCreateData((prev) => ({
-            ...prev,
-            description: value
-        }));
+            setCreateData((prev) => ({
+                ...prev,
+                title: id === 'title' ? value : prev?.title,
+                published: id === 'published' ? e.target?.checked : prev?.published,
+            }));
+        }
+
+        
     }
 
     // Create submit
@@ -127,7 +111,7 @@ export default function Plans({ auth }) {
         setIsLoading(true); 
 
         try{
-            const response = await api.createOnePlan(getCreateData);
+            const response = await api.createOneCollection(getCreateData);
 
             console.log(response);
             
@@ -146,7 +130,7 @@ export default function Plans({ auth }) {
             }
 
             if(response?.data?.message){
-                getAllPlansFetch()
+                getAllCollectionsFetch()
                 
                 setMessage(response?.data?.message)
 
@@ -154,7 +138,7 @@ export default function Plans({ auth }) {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.createPlans){
+                if(response?.data?.createCollection){
                     setCreateForm(false)
                     setOpenModal(false)
                 }
@@ -183,7 +167,7 @@ export default function Plans({ auth }) {
     // Suppresion 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOnePlan(id);
+            const response = await api.deleteOneCollection(id);
 
             console.log(response);
             setDeleteForm(false)
@@ -197,8 +181,8 @@ export default function Plans({ auth }) {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.deletePlan){
-                    getAllPlansFetch()
+                if(response?.data?.deleteCollection){
+                    getAllCollectionsFetch()
                 }
             }
 
@@ -229,15 +213,15 @@ export default function Plans({ auth }) {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Collections</h2>}
         >
-            <Head title="Plans" />
+            <Head title="Collections" />
             <Loading show={isLoading} />
             <div className="sm:px-6 lg:px-8">
 
                 <div className='flex justify-between page-title'>
 
-                    <h1 className='title'>Plans </h1>
+                    <h1 className='title'>Collections </h1>
 
                     <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button>
                 </div>
@@ -254,38 +238,36 @@ export default function Plans({ auth }) {
                                 <tr>
                                     <th>ID</th>
                                     <th>Titre</th>
-                                    <th>Prix</th>
+                                    <th>Limite</th>
                                     <th>Publier</th>
-                                    <th>Interval</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {allPlans?.map((plan) => (
-                                <tr key={plan.id}>
-                                    <td>{plan.id}</td>
-                                    <td>{plan.title}</td>
-                                    <td>{plan.amount * 0.01} €</td>
+                            {allCollections?.map((collection) => (
+                                <tr key={collection.id}>
+                                    <td>{collection.id}</td>
+                                    <td>{collection.title}</td>
+                                    <td>{collection.limite}</td>
                                     <td>
-                                        <span className={`badge ${plan.published == true ? "badge-green" : "badge-red"}`}>{plan.published == true ? "OUI" : "NON"}</span>
+                                        <span className={`badge ${collection.published == true ? "badge-green" : "badge-red"}`}>{collection.published == true ? "OUI" : "NON"}</span>
                                     </td>
-                                    <td>{plan.interval}</td>
                                     <td className='actions flex'>
-                                        <Link href={"/plans/" + plan.id} className="btn"><Icon icon="ph:eye" /></Link>
-                                        {/* <Link href="/plans/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
-                                        <button type="button"  onClick={() => { deleteConfirm(plan.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
+                                        <Link href={"/collections/" + collection.id} className="btn"><Icon icon="ph:eye" /></Link>
+                                        {/* <Link href="/collections/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
+                                        <button type="button"  onClick={() => { deleteConfirm(collection.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
                                     </td>
                                 </tr>
                             ))}
                             
                             </tbody>
                         </table>
-                        {!allPlans || allPlans.length <= 0 &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore de plans.</p> }
+                        {!allCollections || allCollections.length <= 0 &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore de collections.</p> }
                     </div>
                 </div>
 
                 <Modal show={createForm} maxWidth={openModal ? "6xl" : "2xl"} onClose={() => { setCreateForm(false) }}>
-                    <h3 className='text-center font-bold mb-5'>Créer un nouveau plan</h3>
+                    <h3 className='text-center font-bold mb-5'>Créer un nouveau collection</h3>
 
                     <form className={`p-6 text-gray-900 w-full form-without-media ${openModal ? "" : "show"}`}>
                        
@@ -310,30 +292,16 @@ export default function Plans({ auth }) {
                                 <p className='error mt-2'>{getCreateDataError?.titleError}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="amount" className='mb-2' min="0.01" max="1000">Prix</label>
-                                <input type="number" defaultValue={getCreateData?.amount} name="amount" id="amount" onChange={handleChangeData} />
-                                <p className='error mt-2'>{getCreateDataError?.amountError}</p>
+                                <label htmlFor="limite" className='mb-2'>Date limite</label>
+                                <input type="date" defaultValue={getCreateData?.limite} name="limite" id="limite" onChange={handleChangeData} />
+                                <p className='error mt-2'>{getCreateDataError?.limiteError}</p>
                             </div>
-                            
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="interval" className='mb-2'>Interval</label>
-                                <select name="interval" id="interval" defaultValue={getCreateData?.interval} onChange={handleChangeData}>
-                                    <option value="month">Mois</option>
-                                    <option value="year">Année</option>
-                                </select>
-                                <p className='error mt-2'>{getCreateDataError?.intervalError}</p>
-                            </div>
+
 
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="published" className='mb-2'>Publier</label>
                                 <Switch checked={getCreateData?.published} onChange={handleChangeData} id="published" color="secondary" />
                                 <p className='error mt-2'>{getCreateDataError?.publishedError}</p>
-                            </div>
-
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="description" className='mb-2'>Description</label>
-                                <ReactQuill value={getCreateData?.description}  name="description" id="description" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} style={{ minHeight: "140px" }}/>
-                                <p className='error mt-2'>{getCreateDataError?.descriptionError}</p>
                             </div>
                        </div>
                    </form>

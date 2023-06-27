@@ -14,8 +14,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 // partial reloads
-export default function Plans({ auth }) {
-    const [allPlans, setAllPlans] = useState(null);
+export default function Articles({ auth }) {
+    const [allArticles, setAllArticles] = useState(null);
      const [deleteForm, setDeleteForm] = useState(false);
      const [deleteId, setDeleteId] = useState(false);
      const [createForm, setCreateForm] = useState(false);
@@ -49,17 +49,17 @@ export default function Plans({ auth }) {
         setOpenModal(true);
       };
 
-    // Récupérer tous mles plans
-    const getAllPlansFetch = async () => {
+    // Récupérer tous mles Articles
+    const getAllArticlesFetch = async () => {
             
         try{
-            const response = await api.getPlans();
+            const response = await api.getArticles();
 
-            // setAllPlans(response);
+            // setAllArticles(response);
             console.log(response);
 
-            if(response?.data?.allPlans){
-                setAllPlans(response?.data?.allPlans)
+            if(response?.data?.allPost){
+                setAllArticles(response?.data?.allPost)
             }
         } catch(error){
             console.log(error);
@@ -69,11 +69,10 @@ export default function Plans({ auth }) {
     // Init
     useEffect( () => {
         
-        getAllPlansFetch()
+        getAllArticlesFetch()
 
         setCreateData((prev) => ({
             ...prev,
-            interval: "month",
             published: true
         }));
         
@@ -101,15 +100,13 @@ export default function Plans({ auth }) {
         e.preventDefault()
 
         let { id, value } = e.target
-
+        
         setCreateData((prev) => ({
             ...prev,
             title: id === 'title' ? value : prev?.title,
-            amount: id === 'amount' ? value : prev?.amount,
-            // slug: id === 'slug' ? value : prev?.slug,
-            interval: id === 'interval' ? value : prev?.interval,
-            published: id === 'published' ? e.target?.checked : prev?.published,
-            // description: id === 'description' ? value : prev?.description
+            image: id === 'image' ? value : prev?.image,
+            published_at: id === 'published_at' ? value : prev?.published_at,
+            published: id === 'published' ? e.target?.checked : prev?.published
         }));
     }
 
@@ -117,7 +114,7 @@ export default function Plans({ auth }) {
 
         setCreateData((prev) => ({
             ...prev,
-            description: value
+            body: value
         }));
     }
 
@@ -127,7 +124,7 @@ export default function Plans({ auth }) {
         setIsLoading(true); 
 
         try{
-            const response = await api.createOnePlan(getCreateData);
+            const response = await api.createOneArticle(getCreateData);
 
             console.log(response);
             
@@ -146,15 +143,13 @@ export default function Plans({ auth }) {
             }
 
             if(response?.data?.message){
-                getAllPlansFetch()
-                
                 setMessage(response?.data?.message)
 
                 setTimeout(() => {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.createPlans){
+                if(response?.data?.createArticles){
                     setCreateForm(false)
                     setOpenModal(false)
                 }
@@ -183,7 +178,7 @@ export default function Plans({ auth }) {
     // Suppresion 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOnePlan(id);
+            const response = await api.deleteOneArticle(id);
 
             console.log(response);
             setDeleteForm(false)
@@ -197,8 +192,8 @@ export default function Plans({ auth }) {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.deletePlan){
-                    getAllPlansFetch()
+                if(response?.data?.deletePost){
+                    getAllArticlesFetch()
                 }
             }
 
@@ -229,15 +224,15 @@ export default function Plans({ auth }) {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Articles</h2>}
         >
-            <Head title="Plans" />
+            <Head title="Articles" />
             <Loading show={isLoading} />
             <div className="sm:px-6 lg:px-8">
 
                 <div className='flex justify-between page-title'>
 
-                    <h1 className='title'>Plans </h1>
+                    <h1 className='title'>Articles </h1>
 
                     <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button>
                 </div>
@@ -254,38 +249,35 @@ export default function Plans({ auth }) {
                                 <tr>
                                     <th>ID</th>
                                     <th>Titre</th>
-                                    <th>Prix</th>
                                     <th>Publier</th>
-                                    <th>Interval</th>
+                                    <th>Publier le</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {allPlans?.map((plan) => (
-                                <tr key={plan.id}>
-                                    <td>{plan.id}</td>
-                                    <td>{plan.title}</td>
-                                    <td>{plan.amount * 0.01} €</td>
+                            {allArticles?.map((articles) => (
+                                <tr key={articles.id}>
+                                    <td>{articles.id}</td>
+                                    <td>{articles.title}</td>
                                     <td>
-                                        <span className={`badge ${plan.published == true ? "badge-green" : "badge-red"}`}>{plan.published == true ? "OUI" : "NON"}</span>
+                                        <span className={`badge ${articles.published == true ? "badge-green" : "badge-red"}`}>{articles.published == true ? "OUI" : "NON"}</span>
                                     </td>
-                                    <td>{plan.interval}</td>
+                                    <td>{articles.published_at}</td>
                                     <td className='actions flex'>
-                                        <Link href={"/plans/" + plan.id} className="btn"><Icon icon="ph:eye" /></Link>
-                                        {/* <Link href="/plans/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
-                                        <button type="button"  onClick={() => { deleteConfirm(plan.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
+                                        <Link href={"/articles/" + articles.id} className="btn"><Icon icon="ph:eye" /></Link>
+                                        <button type="button"  onClick={() => { deleteConfirm(articles.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
                                     </td>
                                 </tr>
                             ))}
                             
                             </tbody>
                         </table>
-                        {!allPlans || allPlans.length <= 0 &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore de plans.</p> }
+                        {!allArticles &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore d'articles.</p> }
                     </div>
                 </div>
 
-                <Modal show={createForm} maxWidth={openModal ? "6xl" : "2xl"} onClose={() => { setCreateForm(false) }}>
-                    <h3 className='text-center font-bold mb-5'>Créer un nouveau plan</h3>
+                <Modal show={createForm} maxWidth="6xl" onClose={() => { setCreateForm(false) }}>
+                    <h3 className='text-center font-bold mb-5'>Créer un nouvel articles</h3>
 
                     <form className={`p-6 text-gray-900 w-full form-without-media ${openModal ? "" : "show"}`}>
                        
@@ -298,8 +290,8 @@ export default function Plans({ auth }) {
                                 </div>
                             </div>
                             
-                            <div className='col-span-1 flex flex-col items-center lg:mb-0 mb-4'>
-                                <button type="button" onClick={handleOpenModal} className='btn btn-purple mt-3 mb-2'>
+                            <div className='col-span-1 flex justify-center lg:mb-0 mb-4'>
+                                <button type="button" onClick={handleOpenModal} className='btn btn-purple mt-3'>
                                     {!getCreateData?.image ? "Ajouter une image" : "Modifier l'image"}
                                 </button>
                                 <p className='error'>{getCreateDataError?.imageError}</p>
@@ -307,33 +299,24 @@ export default function Plans({ auth }) {
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-4'>
                                 <label htmlFor="title" className='mb-2'>Titre</label>
                                 <input type="text" defaultValue={getCreateData?.title} name="title" id="title" onChange={handleChangeData}/>
-                                <p className='error mt-2'>{getCreateDataError?.titleError}</p>
+                                <p className='error'>{getCreateDataError?.titleError}</p>
                             </div>
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="amount" className='mb-2' min="0.01" max="1000">Prix</label>
-                                <input type="number" defaultValue={getCreateData?.amount} name="amount" id="amount" onChange={handleChangeData} />
-                                <p className='error mt-2'>{getCreateDataError?.amountError}</p>
-                            </div>
-                            
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="interval" className='mb-2'>Interval</label>
-                                <select name="interval" id="interval" defaultValue={getCreateData?.interval} onChange={handleChangeData}>
-                                    <option value="month">Mois</option>
-                                    <option value="year">Année</option>
-                                </select>
-                                <p className='error mt-2'>{getCreateDataError?.intervalError}</p>
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-4'>
+                                <label htmlFor="published_at" className='mb-2'>Publier le</label>
+                                <input type="datetime-local" defaultValue={getCreateData?.published_at} name="published_at" id="published_at" onChange={handleChangeData}/>
+                                <p className='error'>{getCreateDataError?.published_atError}</p>
                             </div>
 
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="published" className='mb-2'>Publier</label>
                                 <Switch checked={getCreateData?.published} onChange={handleChangeData} id="published" color="secondary" />
-                                <p className='error mt-2'>{getCreateDataError?.publishedError}</p>
+                                <p className='error'>{getCreateDataError?.publishedError}</p>
                             </div>
 
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="description" className='mb-2'>Description</label>
-                                <ReactQuill value={getCreateData?.description}  name="description" id="description" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} style={{ minHeight: "140px" }}/>
-                                <p className='error mt-2'>{getCreateDataError?.descriptionError}</p>
+                                <label htmlFor="body" className='mb-2'>Contenu</label>
+                                <ReactQuill value={getCreateData?.body}  name="body" id="body" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} />
+                                <p className='error'>{getCreateDataError?.bodyError}</p>
                             </div>
                        </div>
                    </form>

@@ -14,8 +14,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 // partial reloads
-export default function Plans({ auth }) {
-    const [allPlans, setAllPlans] = useState(null);
+export default function Commandes({ auth }) {
+    const [allCommandes, setAllCommandes] = useState(null);
      const [deleteForm, setDeleteForm] = useState(false);
      const [deleteId, setDeleteId] = useState(false);
      const [createForm, setCreateForm] = useState(false);
@@ -49,17 +49,17 @@ export default function Plans({ auth }) {
         setOpenModal(true);
       };
 
-    // Récupérer tous mles plans
-    const getAllPlansFetch = async () => {
+    // Récupérer tous mles Commandes
+    const getAllCommandesFetch = async () => {
             
         try{
-            const response = await api.getPlans();
+            const response = await api.getCommandes();
 
-            // setAllPlans(response);
+            // setAllCommandes(response);
             console.log(response);
 
-            if(response?.data?.allPlans){
-                setAllPlans(response?.data?.allPlans)
+            if(response?.data?.allCommandes){
+                setAllCommandes(response?.data?.allCommandes)
             }
         } catch(error){
             console.log(error);
@@ -69,104 +69,102 @@ export default function Plans({ auth }) {
     // Init
     useEffect( () => {
         
-        getAllPlansFetch()
+        getAllCommandesFetch()
 
-        setCreateData((prev) => ({
-            ...prev,
-            interval: "month",
-            published: true
-        }));
+        // setCreateData((prev) => ({
+        //     ...prev,
+        //     interval: "month",
+        //     published: true
+        // }));
         
     }, []);
 
-    useEffect( () => {
+    // useEffect( () => {
         
-        console.log(getCreateData);
+    //     console.log(getCreateData);
         
-    }, [getCreateData]);
+    // }, [getCreateData]);
 
-    // Create Modal
-    const createModal = (id) => {
+    // // Create Modal
+    // const createModal = (id) => {
 
-        if(createForm){
-            setCreateForm(false)
-            setOpenModal(false)
-        } else{
-            setCreateForm(true)
-        }
-    }
+    //     if(createForm){
+    //         setCreateForm(false)
+    //         setOpenModal(false)
+    //     } else{
+    //         setCreateForm(true)
+    //     }
+    // }
 
-    // Create Change Data
-    const handleChangeData = async (e) => {
-        e.preventDefault()
+    // // Create Change Data
+    // const handleChangeData = async (e) => {
+    //     e.preventDefault()
 
-        let { id, value } = e.target
+    //     let { id, value } = e.target
 
-        setCreateData((prev) => ({
-            ...prev,
-            title: id === 'title' ? value : prev?.title,
-            amount: id === 'amount' ? value : prev?.amount,
-            // slug: id === 'slug' ? value : prev?.slug,
-            interval: id === 'interval' ? value : prev?.interval,
-            published: id === 'published' ? e.target?.checked : prev?.published,
-            // description: id === 'description' ? value : prev?.description
-        }));
-    }
+    //     setCreateData((prev) => ({
+    //         ...prev,
+    //         title: id === 'title' ? value : prev?.title,
+    //         amount: id === 'amount' ? value : prev?.amount,
+    //         slug: id === 'slug' ? value : prev?.slug,
+    //         interval: id === 'interval' ? value : prev?.interval,
+    //         published: id === 'published' ? e.target?.checked : prev?.published,
+    //         // description: id === 'description' ? value : prev?.description
+    //     }));
+    // }
 
-    const handleChangeWYSIWYG = async (value) => {
+    // const handleChangeWYSIWYG = async (value) => {
 
-        setCreateData((prev) => ({
-            ...prev,
-            description: value
-        }));
-    }
+    //     setCreateData((prev) => ({
+    //         ...prev,
+    //         description: value
+    //     }));
+    // }
 
-    // Create submit
-    const handleCreate = async () => {
+    // // Create submit
+    // const handleCreate = async () => {
 
-        setIsLoading(true); 
+    //     setIsLoading(true); 
 
-        try{
-            const response = await api.createOnePlan(getCreateData);
+    //     try{
+    //         const response = await api.createOneCommande(getCreateData);
 
-            console.log(response);
+    //         console.log(response);
             
 
-            if(response?.data?.errors){
-                setCreateDataError(response?.data?.errors)
+    //         if(response?.data?.errors){
+    //             setCreateDataError(response?.data?.errors)
                 
-            }
+    //         }
 
-            if(response?.data?.error){
-                setMessage(response?.data?.error)
+    //         if(response?.data?.error){
+    //             setMessage(response?.data?.error)
                 
-                setTimeout(() => {
-                    setMessage(false)
-                }, 5000);
-            }
+    //             setTimeout(() => {
+    //                 setMessage(false)
+    //             }, 5000);
+    //         }
 
-            if(response?.data?.message){
-                getAllPlansFetch()
-                
-                setMessage(response?.data?.message)
+    //         if(response?.data?.message){
+    //             setMessage(response?.data?.message)
 
-                setTimeout(() => {
-                    setMessage(false)
-                }, 5000);
+    //             setTimeout(() => {
+    //                 setMessage(false)
+    //             }, 5000);
 
-                if(response?.data?.createPlans){
-                    setCreateForm(false)
-                    setOpenModal(false)
-                }
-            }
+    //             if(response?.data?.createCommandes){
+    //                 setCreateForm(false)
+    //                 setOpenModal(false)
+    //             }
+    //         }
 
-        } catch(error){
-            console.log(error);
-            setMessage(error)
-        }
+    //     } catch(error){
+    //         console.log(error);
+    //         setMessage(error)
+    //     }
 
-        setIsLoading(false); 
-    };
+    //     setIsLoading(false); 
+    // };
 
     // Suppression - Modal
     const deleteConfirm = (id) => {
@@ -183,7 +181,7 @@ export default function Plans({ auth }) {
     // Suppresion 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOnePlan(id);
+            const response = await api.deleteOneCommande(id);
 
             console.log(response);
             setDeleteForm(false)
@@ -197,8 +195,8 @@ export default function Plans({ auth }) {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.deletePlan){
-                    getAllPlansFetch()
+                if(response?.data?.deleteCommande){
+                    getAllCommandesFetch()
                 }
             }
 
@@ -217,29 +215,29 @@ export default function Plans({ auth }) {
         }
     };
 
-    // Create choose image
-    const handleChooseImage = (url) => {
-        setCreateData((prev) => ({
-            ...prev,
-            image: url
-        }));
+    // // Create choose image
+    // const handleChooseImage = (url) => {
+    //     setCreateData((prev) => ({
+    //         ...prev,
+    //         image: url
+    //     }));
 
-        setOpenModal(false)
-    };
+    //     setOpenModal(false)
+    // };
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Commandes</h2>}
         >
-            <Head title="Plans" />
+            <Head title="Commandes" />
             <Loading show={isLoading} />
             <div className="sm:px-6 lg:px-8">
 
                 <div className='flex justify-between page-title'>
 
-                    <h1 className='title'>Plans </h1>
+                    <h1 className='title'>Commandes </h1>
 
-                    <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button>
+                    {/* <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button> */}
                 </div>
 
                 {getMessage && (
@@ -253,39 +251,38 @@ export default function Plans({ auth }) {
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Titre</th>
-                                    <th>Prix</th>
-                                    <th>Publier</th>
-                                    <th>Interval</th>
+                                    <th>Utilisateur</th>
+                                    <th>Plan</th>
+                                    <th>Subscription</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {allPlans?.map((plan) => (
-                                <tr key={plan.id}>
-                                    <td>{plan.id}</td>
-                                    <td>{plan.title}</td>
-                                    <td>{plan.amount * 0.01} €</td>
+                            {allCommandes?.map((commandes) => (
+                                <tr key={commandes.id}>
+                                    <td>{commandes.id}</td>
+                                    <td>{commandes.title}</td>
+                                    <td>{commandes.amount * 0.01} €</td>
                                     <td>
-                                        <span className={`badge ${plan.published == true ? "badge-green" : "badge-red"}`}>{plan.published == true ? "OUI" : "NON"}</span>
+                                        <span className={`badge ${commandes.published == true ? "badge-green" : "badge-red"}`}>{commandes.published == true ? "OUI" : "NON"}</span>
                                     </td>
-                                    <td>{plan.interval}</td>
+                                    <td>{commandes.interval}</td>
                                     <td className='actions flex'>
-                                        <Link href={"/plans/" + plan.id} className="btn"><Icon icon="ph:eye" /></Link>
-                                        {/* <Link href="/plans/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
-                                        <button type="button"  onClick={() => { deleteConfirm(plan.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
+                                        <Link href={"/commandess/" + commandes.id} className="btn"><Icon icon="ph:eye" /></Link>
+                                        {/* <Link href="/commandess/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
+                                        <button type="button"  onClick={() => { deleteConfirm(commandes.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
                                     </td>
                                 </tr>
                             ))}
                             
                             </tbody>
                         </table>
-                        {!allPlans || allPlans.length <= 0 &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore de plans.</p> }
+                        {!allCommandes &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore d'commandes.</p> }
                     </div>
                 </div>
 
-                <Modal show={createForm} maxWidth={openModal ? "6xl" : "2xl"} onClose={() => { setCreateForm(false) }}>
-                    <h3 className='text-center font-bold mb-5'>Créer un nouveau plan</h3>
+                {/* <Modal show={createForm} maxWidth={openModal ? "6xl" : "2xl"} onClose={() => { setCreateForm(false) }}>
+                    <h3 className='text-center font-bold mb-5'>Créer un nouveau Commande</h3>
 
                     <form className={`p-6 text-gray-900 w-full form-without-media ${openModal ? "" : "show"}`}>
                        
@@ -298,8 +295,8 @@ export default function Plans({ auth }) {
                                 </div>
                             </div>
                             
-                            <div className='col-span-1 flex flex-col items-center lg:mb-0 mb-4'>
-                                <button type="button" onClick={handleOpenModal} className='btn btn-purple mt-3 mb-2'>
+                            <div className='col-span-1 flex justify-center lg:mb-0 mb-4'>
+                                <button type="button" onClick={handleOpenModal} className='btn btn-purple mt-3'>
                                     {!getCreateData?.image ? "Ajouter une image" : "Modifier l'image"}
                                 </button>
                                 <p className='error'>{getCreateDataError?.imageError}</p>
@@ -307,12 +304,17 @@ export default function Plans({ auth }) {
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-4'>
                                 <label htmlFor="title" className='mb-2'>Titre</label>
                                 <input type="text" defaultValue={getCreateData?.title} name="title" id="title" onChange={handleChangeData}/>
-                                <p className='error mt-2'>{getCreateDataError?.titleError}</p>
+                                <p className='error'>{getCreateDataError?.titleError}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="amount" className='mb-2' min="0.01" max="1000">Prix</label>
                                 <input type="number" defaultValue={getCreateData?.amount} name="amount" id="amount" onChange={handleChangeData} />
-                                <p className='error mt-2'>{getCreateDataError?.amountError}</p>
+                                <p className='error'>{getCreateDataError?.amountError}</p>
+                            </div>
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
+                                <label htmlFor="slug" className='mb-2'>Slug</label>
+                                <input type="text" defaultValue={getCreateData?.slug} name="slug" id="slug" onChange={handleChangeData} />
+                                <p className='error'>{getCreateDataError?.slugError}</p>
                             </div>
                             
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
@@ -321,19 +323,19 @@ export default function Plans({ auth }) {
                                     <option value="month">Mois</option>
                                     <option value="year">Année</option>
                                 </select>
-                                <p className='error mt-2'>{getCreateDataError?.intervalError}</p>
+                                <p className='error'>{getCreateDataError?.intervalError}</p>
                             </div>
 
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="published" className='mb-2'>Publier</label>
                                 <Switch checked={getCreateData?.published} onChange={handleChangeData} id="published" color="secondary" />
-                                <p className='error mt-2'>{getCreateDataError?.publishedError}</p>
+                                <p className='error'>{getCreateDataError?.publishedError}</p>
                             </div>
 
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="description" className='mb-2'>Description</label>
-                                <ReactQuill value={getCreateData?.description}  name="description" id="description" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} style={{ minHeight: "140px" }}/>
-                                <p className='error mt-2'>{getCreateDataError?.descriptionError}</p>
+                                <ReactQuill value={getCreateData?.description}  name="description" id="description" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} />
+                                <p className='error'>{getCreateDataError?.descriptionError}</p>
                             </div>
                        </div>
                    </form>
@@ -344,7 +346,7 @@ export default function Plans({ auth }) {
                         <button type="button" className={`btn btn-red mr-4 btn-show ${openModal ? "" : "show"}`} onClick={() => { handleCreate() }} >Ajouter</button>
                         <button type="button" className='btn btn-light' onClick={() => { setCreateForm(false); setOpenModal(false); }}>Annuler</button>
                     </div>
-                </Modal>
+                </Modal> */}
 
                 <Modal show={deleteForm} maxWidth="lg" onClose={() => { setDeleteForm(false) }}>
                     <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</h3>

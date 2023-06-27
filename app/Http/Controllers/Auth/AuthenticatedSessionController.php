@@ -38,7 +38,8 @@ class AuthenticatedSessionController extends Controller
     
             $users = $response->json();
 
-            if ($users["token"]) {
+
+            if ($users["token"] && $users["user"]["role"] == "ADMIN" || $users["user"]["role"] == "SUPERADMIN" ) {
                 $token = $users["token"];
                 $user = $users["user"];
     
@@ -51,8 +52,8 @@ class AuthenticatedSessionController extends Controller
                 // return redirect()->intended(RouteServiceProvider::HOME);
             }
         } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
-
+            var_dump("sd");
+            die();
             return redirect()->intended('/login');
         }
         

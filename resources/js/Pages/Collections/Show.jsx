@@ -25,24 +25,6 @@ export default function Show({ auth, id }) {
     const [getMessage, setMessage] = useState(false);
     const [getSuccess, setSuccess] = useState(false);
 
-    const editorOptions = {
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image'],
-            ['clean'],
-          ],
-        },
-        formats: [
-          'header',
-          'bold', 'italic', 'underline', 'strike', 'blockquote',
-          'list', 'bullet',
-          'link', 'image',
-        ],
-      };
-
     const [openModal, setOpenModal] = useState(false)
     // const history = useHistory();
 
@@ -56,14 +38,14 @@ export default function Show({ auth, id }) {
         window.history.back();
     };
 
-    const getOnePlanFetch = async () => {
+    const getOneCollectionFetch = async () => {
             
         try{
-            const response = await api.getOnePlan(id);
+            const response = await api.getOneCollection(id);
 
-            if(response?.data?.showPlan){
-                setData(response?.data?.showPlan)
-                setUpdateData(response?.data?.showPlan)
+            if(response?.data?.showCollection){
+                setData(response?.data?.showCollection)
+                setUpdateData(response?.data?.showCollection)
             }
 
             setMessage("")
@@ -73,7 +55,7 @@ export default function Show({ auth, id }) {
     } 
 
     useEffect( () => {
-        getOnePlanFetch()
+        getOneCollectionFetch()
         
     }, []); 
 
@@ -84,28 +66,32 @@ export default function Show({ auth, id }) {
     const handleChangeData = (e) => {
         let { id, value } = e.target
 
-        setUpdateData((prev) => ({
-            ...prev,
-            // description: id === 'description' ? value : prev?.description,
-            image: id === 'image' ? value : prev?.image,
-            published: id === 'published' ? e.target?.checked : prev?.published,
-            title: id === 'title' ? value : prev?.title,
-        }));
-    }
+        if(id === 'limite'){
+            const limiteDateTime = DateTime.fromISO(value, { zone: 'Europe/Paris' });
+            limiteDateTime.toJSDate()
 
-    const handleChangeWYSIWYG = async (value) => {
+            setCreateData((prev) => ({
+                ...prev,
+                limite: limiteDateTime,
+            }));
+        } else {
 
-        setCreateData((prev) => ({
-            ...prev,
-            description: value
-        }));
+            setUpdateData((prev) => ({
+                ...prev,
+                image: id === 'image' ? value : prev?.image,
+                published: id === 'published' ? e.target?.checked : prev?.published,
+                title: id === 'title' ? value : prev?.title,
+            }));
+        }
+
+       
     }
 
     const handleSubmitData = async (e) => {
         e.preventDefault()
         
         try{
-            const response = await api.updateOnePlan(getUpdateData, id);
+            const response = await api.updateOneCollection(getUpdateData, id);
 
             if(response?.data?.errors){
                 setUpdateDataError(response?.data?.errors)
@@ -126,9 +112,9 @@ export default function Show({ auth, id }) {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.updatePlan){
-                    setData(response?.data?.updatePlan)
-                    setUpdateData(response?.data?.updatePlan)
+                if(response?.data?.updateCollection){
+                    setData(response?.data?.updateCollection)
+                    setUpdateData(response?.data?.updateCollection)
                     setSuccess(false);
                 }
             }
@@ -144,7 +130,7 @@ export default function Show({ auth, id }) {
 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOnePlan(id);
+            const response = await api.deleteOneCollection(id);
 
             console.log(response);
         
@@ -152,8 +138,8 @@ export default function Show({ auth, id }) {
             if(response?.data?.message){
                 setMessage(response?.data?.message)
 
-                if(response?.data?.deletePlan){
-                    router.get('/plans')
+                if(response?.data?.deleteCollection){
+                    router.get('/collections')
                 }
             }
 
@@ -176,13 +162,13 @@ export default function Show({ auth, id }) {
 
     return (
         <AuthenticatedLayout
-            plan={auth.plan}
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
+            collection={auth.collection}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Collections</h2>}
         >
-            <Head title="Plans" />
+            <Head title="Collections" />
             <div className="sm:px-6 lg:px-8">
                 <div className='flex items-center page-title'>
-                    <Link href="/plans" className='go-back'>
+                    <Link href="/collections" className='go-back'>
                         <Icon icon="ph:arrow-circle-left-light" />
                     </Link>
 
@@ -204,12 +190,7 @@ export default function Show({ auth, id }) {
                             <span className={`badge ${getData?.published == true ? "badge-green" : "badge-red"}`}>{getData?.published == true ? "OUI" : "NON"}</span>
                         </h2>
                        
-                        <p>Prix : {getData?.amount * 0.01} €</p>
-                        <p>Interval : <span>{getData?.interval}</span></p>
-                        <p>Stripe_id : {getData?.stripe_id != " N/A" ? getData?.stripe_id : <span className="text-red-600">N/A</span> }</p>
-                        <p>Description :</p>
-                        <div className="content" dangerouslySetInnerHTML={{ __html: getData?.description }}></div>
-
+                        <p>Limite : {getData?.limite}</p>
                         <p>Créée <span>{DateTime.fromISO(getData?.created_at).toRelative()}  ({ DateTime.fromISO(getData?.created_at).toFormat('f')})</span></p>
                     </div>
                     
@@ -224,9 +205,9 @@ export default function Show({ auth, id }) {
                                 <p className='error'>{getUpdateDataError?.title}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="description" className='mb-2'>Description</label>
-                                <ReactQuill value={getUpdateData?.description}  name="description" id="description" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} />
-                                <p className='error'>{getUpdateDataError?.description}</p>
+                                <label htmlFor="limite" className='mb-2'>Date limite</label>
+                                <input type="date" defaultValue={getUpdateDataError?.limite} name="limite" id="limite" onChange={handleChangeData} />
+                                <p className='error mt-2'>{getUpdateDataError?.limiteError}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="published" className='mb-2'>Publier</label>
@@ -235,7 +216,7 @@ export default function Show({ auth, id }) {
                             </div>
                             
                             <div className='col-span-2 flex justify-end pt-2'>
-                                <button type="submit" className='btn btn-purple mb-2' id="form-plans" onClick={handleSubmitData}>Valider</button>
+                                <button type="submit" className='btn btn-purple mb-2' id="form-collections" onClick={handleSubmitData}>Valider</button>
                             </div>
                        </div>
                    </form>
@@ -265,13 +246,13 @@ export default function Show({ auth, id }) {
                    
                 </div>
 
-                <button className='btn btn-red-line' onClick={deleteConfirm}>Supprimer le plan</button>
+                <button className='btn btn-red-line' onClick={deleteConfirm}>Supprimer le collection</button>
 
                 <Modal show={createForm} maxWidth="6xl" onClose={() => { setCreateForm(false) }}>
                      <Medias newClassName="show" chooseImage={handleChooseImage} />
                 </Modal>
                 <Modal show={deleteForm} maxWidth="lg" onClose={() => { setDeleteForm(false) }}>
-                    <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer ce plan ?</h3>
+                    <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer ce collection ?</h3>
 
                     <div className='flex justify-center'>
                         <button type="button" className='btn btn-red mr-4' onClick={() => { handleDelete(getData?.id) }} >Supprimer</button>

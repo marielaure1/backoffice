@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Session;
 
 class JwtToken
 {
@@ -19,7 +20,7 @@ class JwtToken
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->session()->has('jwt_token')) {
+        if (!$request->session()->has('jwt_token') || !Session::get('auth_role') == "ADMIN"  ) {
 
             // var_dump($request->session()->has('jwt_token'));
             // die();

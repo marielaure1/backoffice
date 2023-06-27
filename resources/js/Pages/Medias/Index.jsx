@@ -174,7 +174,7 @@ export default function Medias({ auth }) {
                     <div className="p-6 text-gray-900 block sm:grid gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
 
                     {allMedias?.map((media) => (
-                        <div className='card  ' key={media.id}>
+                        <div className='card ' key={media.id}>
                             <div className="card-img">
                                 <img src={media.url} alt={media.alt} />
                             </div>

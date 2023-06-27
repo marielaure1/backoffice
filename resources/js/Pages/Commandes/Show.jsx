@@ -89,6 +89,7 @@ export default function Show({ auth, id }) {
             // description: id === 'description' ? value : prev?.description,
             image: id === 'image' ? value : prev?.image,
             published: id === 'published' ? e.target?.checked : prev?.published,
+            slug: id === 'slug' ? value : prev?.slug,
             title: id === 'title' ? value : prev?.title,
         }));
     }
@@ -201,11 +202,12 @@ export default function Show({ auth, id }) {
                                 Détails
                                 <button type="button" className='ml-4' onClick={() => openForm("infos-form")}><Icon icon="ph:pencil-light" /></button>
                             </div>
-                            <span className={`badge ${getData?.published == true ? "badge-green" : "badge-red"}`}>{getData?.published == true ? "OUI" : "NON"}</span>
+                            <span className={`badge ${getMessage?.published == true ? "badge-green" : "badge-red"}`}>{getMessage?.published == true ? "OUI" : "NON"}</span>
                         </h2>
                        
                         <p>Prix : {getData?.amount * 0.01} €</p>
                         <p>Interval : <span>{getData?.interval}</span></p>
+                        <p>Slug : {getData?.slug}</p>
                         <p>Stripe_id : {getData?.stripe_id != " N/A" ? getData?.stripe_id : <span className="text-red-600">N/A</span> }</p>
                         <p>Description :</p>
                         <div className="content" dangerouslySetInnerHTML={{ __html: getData?.description }}></div>
@@ -216,12 +218,17 @@ export default function Show({ auth, id }) {
 
                     <form className={`p-6 text-gray-900 w-full block-content ${formActive == "infos-form" ? "active" : ""}`}>
                        
-                       <div className='gap-4 w-full'>
+                       <div className='lg:grid grid-cols-2 gap-4 w-full'>
                             <h2 className="flex items-center font-semibold col-span-2 lg:mb-0 mb-2">Détails <button type="button" className='ml-4' onClick={() => openForm("infos")}><Icon icon="system-uicons:cross" /></button></h2>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="title" className='mb-2'>Titre</label>
                                 <input type="text" defaultValue={getUpdateData?.title} name="title" id="title" onChange={handleChangeData}/>
                                 <p className='error'>{getUpdateDataError?.title}</p>
+                            </div>
+                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
+                                <label htmlFor="slug" className='mb-2'>Slug</label>
+                                <input type="text" defaultValue={getUpdateData?.slug} name="slug" id="slug" onChange={handleChangeData} />
+                                <p className='error'>{getUpdateDataError?.slug}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="description" className='mb-2'>Description</label>

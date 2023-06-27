@@ -310,4 +310,30 @@ input:focus, select:focus, textarea:focus {
 
 .error {
   color: crimson;
+}
+
+.quill > .ql-container {
+  min-height: 150px;
+}
+
+.badge-categorie:nth-child(1n) {
+  background-color: #5935f5;
+  color: white;
+}
+
+.badge-categorie:nth-child(2n) {
+  background-color: rgb(165, 233, 255);
+  color: rgb(55, 132, 255);
+}
+
+.badge-categorie:nth-child(3n) {
+  background-color: rgb(255, 244, 190);
+  color: rgb(255, 133, 57);
+}
+
+#categories > div > div > .css-1p3m7a8-multiValue {
+  background-color: hsl(194.77, 100%, 54.09%);
+}
+#categories > div > div > .css-1p3m7a8-multiValue > div {
+  color: white;
 }/*# sourceMappingURL=app.css.map */

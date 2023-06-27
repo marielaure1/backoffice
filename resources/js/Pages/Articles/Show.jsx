@@ -56,14 +56,16 @@ export default function Show({ auth, id }) {
         window.history.back();
     };
 
-    const getOnePlanFetch = async () => {
+    const getOneArticleFetch = async () => {
             
         try{
-            const response = await api.getOnePlan(id);
+            const response = await api.getOneArticle(id);
 
-            if(response?.data?.showPlan){
-                setData(response?.data?.showPlan)
-                setUpdateData(response?.data?.showPlan)
+            console.log(response);
+            
+            if(response?.data?.showPost){
+                setData(response?.data?.showPost)
+                setUpdateData(response?.data?.showPost)
             }
 
             setMessage("")
@@ -73,7 +75,7 @@ export default function Show({ auth, id }) {
     } 
 
     useEffect( () => {
-        getOnePlanFetch()
+        getOneArticleFetch()
         
     }, []); 
 
@@ -86,19 +88,17 @@ export default function Show({ auth, id }) {
 
         setUpdateData((prev) => ({
             ...prev,
-            // description: id === 'description' ? value : prev?.description,
             image: id === 'image' ? value : prev?.image,
             published: id === 'published' ? e.target?.checked : prev?.published,
-            slug: id === 'slug' ? value : prev?.slug,
             title: id === 'title' ? value : prev?.title,
         }));
     }
 
     const handleChangeWYSIWYG = async (value) => {
 
-        setCreateData((prev) => ({
+        setUpdateData((prev) => ({
             ...prev,
-            description: value
+            body: value
         }));
     }
 
@@ -106,7 +106,7 @@ export default function Show({ auth, id }) {
         e.preventDefault()
         
         try{
-            const response = await api.updateOnePlan(getUpdateData, id);
+            const response = await api.updateOneArticle(getUpdateData, id);
 
             if(response?.data?.errors){
                 setUpdateDataError(response?.data?.errors)
@@ -127,9 +127,9 @@ export default function Show({ auth, id }) {
                     setMessage(false)
                 }, 5000);
 
-                if(response?.data?.updatePlan){
-                    setData(response?.data?.updatePlan)
-                    setUpdateData(response?.data?.updatePlan)
+                if(response?.data?.updatePost){
+                    setData(response?.data?.updatePost)
+                    setUpdateData(response?.data?.updatePost)
                     setSuccess(false);
                 }
             }
@@ -145,7 +145,7 @@ export default function Show({ auth, id }) {
 
     const handleDelete = async (id) => {
         try{
-            const response = await api.deleteOnePlan(id);
+            const response = await api.deleteOneArticle(id);
 
             console.log(response);
         
@@ -153,8 +153,8 @@ export default function Show({ auth, id }) {
             if(response?.data?.message){
                 setMessage(response?.data?.message)
 
-                if(response?.data?.deletePlan){
-                    router.get('/plans')
+                if(response?.data?.deletePost){
+                    router.get('/articles')
                 }
             }
 
@@ -177,15 +177,14 @@ export default function Show({ auth, id }) {
 
     return (
         <AuthenticatedLayout
-            plan={auth.plan}
-            header={<h2 className="font-semibold text-xl text-black leading-tight">Plans</h2>}
+            header={<h2 className="font-semibold text-xl text-black leading-tight">Articles</h2>}
         >
-            <Head title="Plans" />
+            <Head title="Articles" />
             <div className="sm:px-6 lg:px-8">
                 <div className='flex items-center page-title'>
-                    {/* <Link href="#" onClick={goBack} className='go-back'>
+                    <Link href="/articles" className='go-back'>
                         <Icon icon="ph:arrow-circle-left-light" />
-                    </Link> */}
+                    </Link>
 
                     <h1 className='title'>{getData?.title}</h1>
                     
@@ -202,15 +201,13 @@ export default function Show({ auth, id }) {
                                 Détails
                                 <button type="button" className='ml-4' onClick={() => openForm("infos-form")}><Icon icon="ph:pencil-light" /></button>
                             </div>
-                            <span className={`badge ${getMessage?.published == true ? "badge-green" : "badge-red"}`}>{getMessage?.published == true ? "OUI" : "NON"}</span>
+                            <span className={`badge ${getData?.published == true ? "badge-green" : "badge-red"}`}>{getData?.published == true ? "OUI" : "NON"}</span>
                         </h2>
                        
-                        <p>Prix : {getData?.amount * 0.01} €</p>
-                        <p>Interval : <span>{getData?.interval}</span></p>
+                        <p>Auteur : <Link className='underline' href={"/users/" + getData?.user?.id}>{getData?.user.first_name} <strong>{getData?.user.last_name}</strong></Link></p>
                         <p>Slug : {getData?.slug}</p>
-                        <p>Stripe_id : {getData?.stripe_id != " N/A" ? getData?.stripe_id : <span className="text-red-600">N/A</span> }</p>
-                        <p>Description :</p>
-                        <div className="content" dangerouslySetInnerHTML={{ __html: getData?.description }}></div>
+                        <p>Contenu :</p>
+                        <div className="content" dangerouslySetInnerHTML={{ __html: getData?.body }}></div>
 
                         <p>Créée <span>{DateTime.fromISO(getData?.created_at).toRelative()}  ({ DateTime.fromISO(getData?.created_at).toFormat('f')})</span></p>
                     </div>
@@ -226,14 +223,9 @@ export default function Show({ auth, id }) {
                                 <p className='error'>{getUpdateDataError?.title}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="slug" className='mb-2'>Slug</label>
-                                <input type="text" defaultValue={getUpdateData?.slug} name="slug" id="slug" onChange={handleChangeData} />
-                                <p className='error'>{getUpdateDataError?.slug}</p>
-                            </div>
-                            <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
-                                <label htmlFor="description" className='mb-2'>Description</label>
-                                <ReactQuill value={getUpdateData?.description}  name="description" id="description" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} />
-                                <p className='error'>{getUpdateDataError?.description}</p>
+                                <label htmlFor="body" className='mb-2'>Body</label>
+                                <ReactQuill value={getUpdateData?.body}  name="body" id="body" onChange={handleChangeWYSIWYG} modules={editorOptions.modules} formats={editorOptions.formats} />
+                                <p className='error'>{getUpdateDataError?.body}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="published" className='mb-2'>Publier</label>
@@ -272,13 +264,13 @@ export default function Show({ auth, id }) {
                    
                 </div>
 
-                <button className='btn btn-red-line' onClick={deleteConfirm}>Supprimer le plan</button>
+                <button className='btn btn-red-line' onClick={deleteConfirm}>Supprimer l'article</button>
 
                 <Modal show={createForm} maxWidth="6xl" onClose={() => { setCreateForm(false) }}>
                      <Medias newClassName="show" chooseImage={handleChooseImage} />
                 </Modal>
                 <Modal show={deleteForm} maxWidth="lg" onClose={() => { setDeleteForm(false) }}>
-                    <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer ce plan ?</h3>
+                    <h3 className='text-center font-bold mb-5'>Êtes-vous sûr de vouloir supprimer cet article ?</h3>
 
                     <div className='flex justify-center'>
                         <button type="button" className='btn btn-red mr-4' onClick={() => { handleDelete(getData?.id) }} >Supprimer</button>
