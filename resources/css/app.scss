@@ -388,3 +388,11 @@ input:focus, select:focus, textarea:focus{
         }
     }
 }
+
+.form-password, .message-password{
+    display: none;
+}
+
+.form-password.show, .message-password.show{
+    display: block;
+}

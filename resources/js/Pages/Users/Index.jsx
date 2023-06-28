@@ -35,6 +35,12 @@ export default function Users({ auth }) {
     useEffect( () => {
         
         getAllUsersFetch()
+
+        setCreateData((prev) => ({
+            ...prev,
+            role: "ADMIN"
+            
+        }));
         
     }, []);
     
@@ -75,33 +81,6 @@ export default function Users({ auth }) {
         }));
     }
 
-    // const handleSubmitData = async (e) => {
-    //     e.preventDefault()
-        
-    //     try{
-    //         const response = await api.createOneUser(getCreateData, id);
-
-    //         console.log(response);
-
-    //         if(response?.data?.createUser){
-    //             setData(response?.data?.createUser)
-    //             setCreateData(response?.data?.createUser)
-    //         }
-
-    //         if(response?.data?.error){
-    //             setCreateDataError(response?.data?.error)
-    //         }
-
-    //         if(response?.data?.message){
-    //             setMessage(response?.data?.message)
-    //         }
-    //     } catch(error){
-    //         console.log(error);
-    //         setMessage(error)
-    //     }
-
-    // };
-
     const handleCreate = async () => {
         try{
             const response = await api.createOneUser(getCreateData);
@@ -109,14 +88,24 @@ export default function Users({ auth }) {
             console.log(response);
             
 
-            if(response?.data?.createUser){
+            if(response?.data?.token){
                 getAllUsersFetch()
                 setCreateForm(false)
+
+                if(response?.data?.message){
+                    setMessage(response?.data?.message)
+
+                    setTimeout(() => {
+                        setMessage(false)
+                    }, 5000);
+                }
             }
 
-            if(response?.data?.message){
-                setMessage(response?.data?.message)
+            if(response?.data?.errors){
+                setCreateDataError(response?.data?.errors)
             }
+
+           
 
         } catch(error){
             console.log(error);
@@ -168,7 +157,7 @@ export default function Users({ auth }) {
 
                     <h1 className='title'>Utilisateurs</h1>
                     
-                    <button type="button"  onClick={createModal} className='btn btn-light' >Ajouter +</button>
+                    <button type="button"  onClick={createModal} className='btn btn-white' >Ajouter +</button>
                 </div>
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className="p-6 text-gray-900 overflow-x-auto">
@@ -215,36 +204,36 @@ export default function Users({ auth }) {
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="last_name" className='mb-2'>Nom</label>
                                 <input type="text" defaultValue={getCreateData?.last_name} name="last_name" id="last_name" onChange={handleChangeData}/>
-                                <p className='error'></p>
+                                <p className='error'>{getCreateDataError?.last_name}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="first_name" className='mb-2'>Prénom</label>
                                 <input type="text" defaultValue={getCreateData?.first_name} name="first_name" id="first_name" onChange={handleChangeData} />
-                                <p className='error'></p>
+                                <p className='error'>{getCreateDataError?.first_name}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="email" className='mb-2'>Email</label>
                                 <input type="email" defaultValue={getCreateData?.email} name="email" id="email" onChange={handleChangeData} />
-                                <p className='error'></p>
+                                <p className='error'>{getCreateDataError?.email}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="phone" className='mb-2'>Téléphone</label>
                                 <input type="tel" defaultValue={getCreateData?.phone} name="phone" id="phone" onChange={handleChangeData}/>
-                                <p className='error'></p>
+                                <p className='error'>{getCreateDataError?.phone}</p>
                             </div>
                             
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="role" className='mb-2'>Rôle</label>
                                 <select name="role" id="role" defaultValue={getCreateData?.role} onChange={handleChangeData}>
                                     <option value="USER">Utilisateur</option>
-                                    <option value="ADMIN">Administrateur</option>
+                                    <option value="ADMIN" selected>Administrateur</option>
                                 </select>
-                                <p className='error'></p>
+                                <p className='error'>{getCreateDataError?.role}</p>
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="line1" className='mb-2'>Libellé</label>
                                 <input type="text" defaultValue={getCreateData?.address?.line1}  name="line1" id="line1" onChange={handleChangeData}/>
-                                <p className='error'></p>
+                                
                             </div>
                             <div className='col-span-1 flex flex-col lg:mb-0 mb-2'>
                                 <label htmlFor="postal_code" className='mb-2'>Code postal</label>

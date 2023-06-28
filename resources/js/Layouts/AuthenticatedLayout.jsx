@@ -11,7 +11,7 @@ import { logoWhite } from "../../medias"
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { loginSuccess } from '../Stores/store';
+import { loginSuccess } from '../Stores/Store';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -32,7 +32,7 @@ export default function Authenticated({ user, header, children }) {
         <div className="min-h-screen bg-gray-100 flex two-column">
 
            <SideBar />
-            <div className='ml-[250px] py-[70px] relative w-full bg-gray-100' id="main-content">
+            <div className='ml-[200px] py-[70px] relative w-full bg-gray-100' id="main-content">
                 <TopBar me={me} />
               
                 <TransitionGroup className="transition-group">

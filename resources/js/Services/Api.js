@@ -1,7 +1,5 @@
 import axios from 'axios';
-// import dotenv from 'dotenv';
 
-// dotenv.config()
 // const token = store.getState().token
 const token = localStorage.getItem("token")
 
@@ -16,6 +14,7 @@ const collections = axios.create({ baseURL: `${URL}/collections` });
 const categories = axios.create({ baseURL: `${URL}/categories` });
 const products = axios.create({ baseURL: `${URL}/products` });
 const promocodes = axios.create({ baseURL: `${URL}/promo-code` });
+const auth = axios.create({ baseURL: `${URL}/auth` });
 
 export default {
   // Users
@@ -25,6 +24,11 @@ export default {
   updateOneUser : async (data, id) => users.put(`/${id}`, data, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
   updateOneUserPassword : async (data, id) => users.put(`/${id}/password`, data, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
   deleteOneUser : async (id) => users.delete(`/${id}`, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,
+
+  // Auth
+  resetPassword : async (data) => auth.post(`/reset-password`, data).then((r) => r ).catch((error) => error.response) ,
+  resetPasswordToken : async (token) => auth.get(`/reset-password/${token}`).then((r) => r ).catch((error) => error.response) ,
+  resetPasswordTokenPost : async (data, token) => auth.post(`/reset-password/${token}`, data).then((r) => r ).catch((error) => error.response) ,
   
    // Plans
    getPlans : async () => plans.get(``, { headers: { Authorization: `Bearer ${token}`}}).then((r) => r ).catch((error) => error.response) ,

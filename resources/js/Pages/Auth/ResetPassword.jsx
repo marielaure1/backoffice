@@ -1,36 +1,58 @@
-import { useEffect } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import api from '@/Services/Api.js';
+import { useState, useEffect } from "react"
+import { Link } from '@inertiajs/react';
 
-export default function ResetPassword({ token, email }) {
+export default function ResetPassword({ token }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
-        email: email,
         password: '',
         password_confirmation: '',
     });
 
+    const [formView, setFormView] = useState(true)
+    const [getMessage, setMessage] = useState("")
+
+    const handleToken = async() => {
+        const response = await api.resetPasswordToken(token)
+
+        console.log(response);
+
+        if(response?.date?.user){
+            setFormView(true)
+        }
+    }
     useEffect(() => {
-        return () => {
-            reset('password', 'password_confirmation');
-        };
+        handleToken()
     }, []);
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
 
-        post(route('password.store'));
+        const response = await api.resetPasswordTokenPost(data, token)
+
+        console.log(response);
+
+        if(response?.data?.error){
+            setMessage(response?.data?.error)
+        }
+        
+        if(response?.data?.message){
+            setMessage(response?.data?.message)
+            setFormView(false)
+        }
     };
 
     return (
         <GuestLayout>
             <Head title="Reset Password" />
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className={`form-password ${formView == true ? "show" : ""}`}>
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -48,7 +70,7 @@ export default function ResetPassword({ token, email }) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <InputLabel htmlFor="password" value="Mot de passe" />
 
                     <TextInput
                         id="password"
@@ -65,9 +87,10 @@ export default function ResetPassword({ token, email }) {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <InputLabel htmlFor="password_confirmation" value="Confirmation du mot de passe" />
 
                     <TextInput
+                        id="password_confirmation"
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
@@ -78,13 +101,23 @@ export default function ResetPassword({ token, email }) {
 
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
+                {getMessage && <p>{getMessage}</p>}
 
                 <div className="flex items-center justify-end mt-4">
                     <PrimaryButton className="ml-4" disabled={processing}>
-                        Reset Password
+                        Modifier le mot de passe
                     </PrimaryButton>
                 </div>
             </form>
+
+
+            <div className={`message-password ${formView == false ? "show" : ""}`}>
+                <p>Ce lien à expiré</p>
+
+                    <Link href="/login" className="ml-4" >
+                       Se connecter
+                    </Link>
+            </div>
         </GuestLayout>
     );
 }

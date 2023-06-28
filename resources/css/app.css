@@ -336,4 +336,12 @@ input:focus, select:focus, textarea:focus {
 }
 #categories > div > div > .css-1p3m7a8-multiValue > div {
   color: white;
+}
+
+.form-password, .message-password {
+  display: none;
+}
+
+.form-password.show, .message-password.show {
+  display: block;
 }/*# sourceMappingURL=app.css.map */

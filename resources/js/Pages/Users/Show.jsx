@@ -97,15 +97,21 @@ export default function Show({ auth, id }) {
             if(response?.data?.updateUser){
                 setData(response?.data?.updateUser)
                 setUpdateData(response?.data?.updateUser)
+
+                if(response?.data?.message){
+                    setMessage(response?.data?.message)
+
+                    setTimeout(() => {
+                        setMessage(false)
+                    }, 5000);
+                }
             }
 
             if(response?.data?.error){
                 setUpdateDataError(response?.data?.error)
             }
 
-            if(response?.data?.message){
-                setMessage(response?.data?.message)
-            }
+          
         } catch(error){
             console.log(error);
             setMessage(error)

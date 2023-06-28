@@ -133,6 +133,23 @@ Route::prefix('medias')->middleware(['jwt'])->group(function () {
     })->name('medias');
 });
 
+Route::get('/reset-password', function () {
+    return Inertia::render('Auth/ForgotPassword');
+})->name('resetpassword');
+
+Route::get('/reset-password/{token}', function (string $token) {
+    return Inertia::render('Auth/ResetPassword', [
+        "token" => $token
+    ]);
+})->name('resetpassword.token');
+
+Route::post('/reset-password/{token}', function (string $token) {
+    return Inertia::render('Auth/ResetPassword', [
+        "token" => $token
+    ]);
+})->name('resetpassword.tokenPost');
+
+
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 //     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

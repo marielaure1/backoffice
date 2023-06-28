@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
     {
         try {
             $response = Http::withHeaders(['Content-Type' => 'application/json'])
-                ->post(env("API_URL")+'/auth/loginAdmin', $request->all());
+                ->post(env("API_URL").'/auth/loginAdmin', $request->all());
     
             $users = $response->json();
 
@@ -52,8 +52,6 @@ class AuthenticatedSessionController extends Controller
                 // return redirect()->intended(RouteServiceProvider::HOME);
             }
         } catch (\Exception $e) {
-            var_dump("sd");
-            die();
             return redirect()->intended('/login');
         }
         
