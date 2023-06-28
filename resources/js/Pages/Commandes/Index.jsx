@@ -215,15 +215,6 @@ export default function Commandes({ auth }) {
         }
     };
 
-    // // Create choose image
-    // const handleChooseImage = (url) => {
-    //     setCreateData((prev) => ({
-    //         ...prev,
-    //         image: url
-    //     }));
-
-    //     setOpenModal(false)
-    // };
 
     return (
         <AuthenticatedLayout
@@ -277,7 +268,7 @@ export default function Commandes({ auth }) {
                             
                             </tbody>
                         </table>
-                        {!allCommandes &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore d'commandes.</p> }
+                        {!allCommandes &&  <p className='text-center p-3 text-gray-400'>Vous n'avez pas encore commandes.</p> }
                     </div>
                 </div>
 

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import store from '../Stores/store';
 
 // const token = store.getState().token
 const token = localStorage.getItem("token")

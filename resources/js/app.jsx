@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { Provider } from 'react-redux';
-import store from './Stores/store';
+import store from './Stores/Store';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
