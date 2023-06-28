@@ -1,7 +1,4 @@
 <?php
-
-// use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,12 +32,15 @@ Route::middleware(['jwt'])->get('/', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
-Route::middleware(['jwt'])->prefix('users')->group(function () {
-    Route::get('/', [UsersController::class, 'index'])->name('users');
-    Route::post('/', [UsersController::class, 'create'])->name('users.create');
-    Route::get('/{id}', [UsersController::class, 'show'])->name('users.show');
-    Route::put('/{id}', [UsersController::class, 'update'])->name('users.update');
-    Route::delete('/{id}', [UsersController::class, 'delete'])->name('users.delete');
+Route::prefix('users')->middleware(['jwt'])->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Users/Index');
+    })->name('users');
+    Route::get('/{id}', function (int $id) {
+        return Inertia::render('Users/Show', [
+            "id" => $id
+        ]);
+    })->name('users.show');
 });
 
 Route::prefix('plans')->middleware(['jwt'])->group(function () {

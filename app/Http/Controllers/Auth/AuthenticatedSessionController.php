@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
     {
         try {
             $response = Http::withHeaders(['Content-Type' => 'application/json'])
-                ->post('http://localhost:3001/api/auth/loginAdmin', $request->all());
+                ->post(env("API_URL")+'/auth/loginAdmin', $request->all());
     
             $users = $response->json();
 

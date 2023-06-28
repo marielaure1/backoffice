@@ -1,10 +1,11 @@
 import axios from 'axios';
+// import dotenv from 'dotenv';
 
+// dotenv.config()
 // const token = store.getState().token
 const token = localStorage.getItem("token")
 
-console.log(token);
-const URL = "http://localhost:3001/api"
+const URL = import.meta.env.VITE_API_URL
 
 const users = axios.create({ baseURL: `${URL}/users` });
 const plans = axios.create({ baseURL: `${URL}/plans` });
