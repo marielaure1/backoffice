@@ -58,8 +58,8 @@ export default function Abonnements({ auth }) {
             // setAllAbonnements(response);
             console.log(response);
 
-            if(response?.data?.allAbonnements){
-                setAllAbonnements(response?.data?.allAbonnements)
+            if(response?.data?.allSubscription){
+                setAllAbonnements(response?.data?.allSubscription)
             }
         } catch(error){
             console.log(error);
@@ -253,25 +253,14 @@ export default function Abonnements({ auth }) {
                                     <th>ID</th>
                                     <th>Utilisateur</th>
                                     <th>Plan</th>
-                                    <th>Subscription</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {allAbonnements?.map((abonnements) => (
                                 <tr key={abonnements.id}>
                                     <td>{abonnements.id}</td>
-                                    <td>{abonnements.title}</td>
-                                    <td>{abonnements.amount * 0.01} €</td>
-                                    <td>
-                                        <span className={`badge ${abonnements.published == true ? "badge-green" : "badge-red"}`}>{abonnements.published == true ? "OUI" : "NON"}</span>
-                                    </td>
-                                    <td>{abonnements.interval}</td>
-                                    <td className='actions flex'>
-                                        <Link href={"/abonnementss/" + abonnements.id} className="btn"><Icon icon="ph:eye" /></Link>
-                                        {/* <Link href="/abonnementss/create" className="btn"><Icon icon="ph:pencil-light" /></Link> */}
-                                        <button type="button"  onClick={() => { deleteConfirm(abonnements.id) }} ><Icon icon="solar:trash-bin-2-outline" /></button>
-                                    </td>
+                                    <td><Link className="underline" href={"/plans/" + abonnements.plan_id}>{abonnements.plan_id} - {abonnements.plan.title}</Link> </td>
+                                    <td> <Link className="underline" href={"/users/" + abonnements.user_id}>{abonnements.user_id} - {abonnements.user.first_name} {abonnements.user.last_name}</Link> </td>
                                 </tr>
                             ))}
                             
